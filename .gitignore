@@ -1,0 +1,11 @@
+/[L-l]ibrary/
+/[T]emp/
+/[O]bj/
+/[B]uild/
+/[B]uilds/
+/[L]ogs/
+/[U]serS[e]ttings/
+/[M]emoryCaptures/
+*.csproj
+*.unityproj
+*.sln
