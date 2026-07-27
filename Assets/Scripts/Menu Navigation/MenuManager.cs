@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// TODO: добавить поддержку кнопки сброса данных меню
+
+//скрипт управления меню, при переходе пользователя между ними
 public class MenuManager : MonoBehaviour
 {
     // Событие которое вызывают все кнопки пересылающие на другие меню, Словарь для обращения к меню по имени, Стек для хранения истории открытых меню
@@ -73,6 +76,7 @@ public class MenuManager : MonoBehaviour
         }
     }
 
+    //метод для перехода в главное меню, закрывая все остальные
     private void ToMainMenu()
     {
         CloseMenu("all");
