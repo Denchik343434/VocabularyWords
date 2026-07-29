@@ -5,8 +5,9 @@ using System.Collections.Generic;
 
 // Класс одного слова (в будущем добавить сюда аудио)
 [Serializable]
-public class Word
+public class WordData
 {
-    public string word; // "приме*р"
+    public string Word; // "приме*р"
+    public string Explanation;
     //public string audio; // "primer.mp3"
 }

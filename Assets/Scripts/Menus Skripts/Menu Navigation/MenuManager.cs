@@ -8,8 +8,7 @@ using UnityEngine;
 //скрипт управления меню, при переходе пользователя между ними
 public class MenuManager : MonoBehaviour
 {
-    // Событие которое вызывают все кнопки пересылающие на другие меню, Словарь для обращения к меню по имени, Стек для хранения истории открытых меню
-    public Action<string> OnOpenPanelRequested;
+    //Словарь для обращения к меню по имени, Стек для хранения истории открытых меню
     private Dictionary<string, Menu> _menusDictionary = new Dictionary<string, Menu>();
     private Stack<string> _menuStack = new Stack<string>();
 
@@ -28,7 +27,7 @@ public class MenuManager : MonoBehaviour
     {
         CloseMenu("all");
         OpenMenu("MainMenu");
-        OnOpenPanelRequested += GoToMenu;
+        MenuButtonTrigger.OnOpenPanelRequested += GoToMenu;
     }
 
     //закрытие меню 

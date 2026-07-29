@@ -23,7 +23,7 @@ public class StorageManager
     }
 
     // Получить имена всех созданных библиотек
-public static List<string> GetLibraryNames()
+    public static List<string> GetLibraryNames()
     {
         List<string> libraryNames = new List<string>();
         string[] files = Directory.GetFiles(LibrariesFolderPath, "*.vcl");
@@ -37,11 +37,11 @@ public static List<string> GetLibraryNames()
     }
 
     // Сохранить библиотеку в zip - .vcl с json 
-    public static void SaveLibrary(Library library)
+    public static void SaveLibrary(LibraryData library)
     {
 
-        string tempFolder = Path.Combine(Application.temporaryCachePath, library.libraryName);
-        string vclFilePath = Path.Combine(LibrariesFolderPath, library.libraryName + ".vcl");
+        string tempFolder = Path.Combine(Application.temporaryCachePath, library.LibraryName);
+        string vclFilePath = Path.Combine(LibrariesFolderPath, library.LibraryName + ".vcl");
 
         // 1. Создаем чистую временную папку для сборки
         if (Directory.Exists(tempFolder))
@@ -67,11 +67,11 @@ public static List<string> GetLibraryNames()
         // 5. Чистим за собой временную папку
         Directory.Delete(tempFolder, true);
 
-        Debug.Log($"[Storage] Библиотека '{library.libraryName}.vcl' успешно сохранена!");
+        Debug.Log($"[Storage] Библиотека '{library.LibraryName}.vcl' успешно сохранена!");
     }
 
     // Загрузить библиотеку по имени
-    public static Library LoadLibrary(string libraryName)
+    public static LibraryData LoadLibrary(string libraryName)
     {
         string vclFilePath = Path.Combine(LibrariesFolderPath, libraryName + ".vcl");
 
@@ -95,7 +95,7 @@ public static List<string> GetLibraryNames()
             return null;
         }
         string jsonText = File.ReadAllText(jsonPath);
-        Library loadedLibrary = JsonUtility.FromJson<Library>(jsonText);
+        LibraryData loadedLibrary = JsonUtility.FromJson<LibraryData>(jsonText);
 
         // 4. Чистим за собой временную папку
         Directory.Delete(tempFolder, true);

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class StorageInitialiser : MonoBehaviour
 {
-    void Start()
+    void Awake()
     {
         StorageManager.InitializeStorage();
     }

@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 
 [Serializable]
-public class Library
+public class LibraryData
 {
-    public string libraryName;
-    public List<Word> words = new List<Word>();
+    public string LibraryName;
+    public List<WordData> Words = new List<WordData>();
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,17 +12,18 @@ public class MenuButtonTrigger : MonoBehaviour
     private Button _button;
     private MenuManager _menuManager;
 
+    public static event Action<string> OnOpenPanelRequested;
+
     //получение компонентов и подписка на событие нажатия кнопки
     void Awake()
     {
         _button = GetComponent<Button>();
         _button.onClick.AddListener(UpdateMenu);
-        _menuManager = FindObjectOfType<MenuManager>();
     }
 
     //метод вызывающий событие на которое реагирует менеджер меню для открытия меню
     private void UpdateMenu()
     {
-        _menuManager.OnOpenPanelRequested?.Invoke(_targetMenuName);
+        OnOpenPanelRequested?.Invoke(_targetMenuName);
     }
 }
