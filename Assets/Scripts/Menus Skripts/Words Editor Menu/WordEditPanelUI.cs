@@ -4,9 +4,11 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
-
+using Unity.VisualScripting;
+using System.Text.RegularExpressions;
+using System.Linq;
 // компонент панели редактирования слова
-public class WordPanelUI : MonoBehaviour
+public class WordEditPanelUI : MonoBehaviour
 {
     // Ссылки на UI элементы 
     [SerializeField] private TMP_InputField _wordInput;
@@ -24,10 +26,25 @@ public class WordPanelUI : MonoBehaviour
 
     // поле и свойство для получения данный слова при сохранении библиотеки
     private WordData _word;
-    public WordData Word => _word;
+    public WordData Word
+    {
+        get
+        {
+            return _word;
+        }
 
-    //Событие говорящее можно ли сохранятся или нет
-    public event Action _onSavePosible;
+        set
+        {
+            _word = value;
+            Setup(value);
+        }
+    }
+
+    //Событие на изменение слова
+    public static event Action OnWordChanget;
+
+    // свойсто на наличае нужных полей для проверки на возможность сохранения
+    public bool IsEmpty => IsValid();
 
     private void Start()
     {
@@ -44,9 +61,10 @@ public class WordPanelUI : MonoBehaviour
         _removeButton.onClick.AddListener(OnRemoveClicked);
 
         OnValuesUpdate();
+        _emptyWarningIcon.SetActive(IsValid()); //чтото с вс кодом не так
     }
 
-    // Заполнение данными при загрузке существующей библиотеки, требует подписки на событие
+    // Заполнение данными при загрузке существующей библиотеки, используется в свойстве
     private void Setup(WordData wordData)
     {
         _wordInput.text = wordData.Word;
@@ -61,16 +79,18 @@ public class WordPanelUI : MonoBehaviour
     {
         return new WordData
         {
-            Word = _wordInput.text.Trim(),
-            Explanation = _explanationInput.text.Trim()
+            //очень умный код написанный неиронкой чтобы приводить строки к нормальному виду
+            Word =  Regex.Replace(_wordInput.text.Trim(), @"[^а-яё\*]", "", RegexOptions.IgnoreCase),
+            Explanation = new string(_explanationInput.text.Trim().Where(c => !char.IsControl(c) || c == '\n' || c == '\r' || c == '\t').ToArray())
             // audio = attachedAudioPath
         };
     }
 
+    //Метод для подписки на события изменения полей
     private void OnValuesUpdate()
     {
         _word = UpdateWord();
-        _onSavePosible?.Invoke();
+        OnWordChanget?.Invoke();
     }
 
     // Проверка, заполнены ли обязательные поля

@@ -30,6 +30,11 @@ public class MenuManager : MonoBehaviour
         MenuButtonTrigger.OnOpenPanelRequested += GoToMenu;
     }
 
+    void OnDestroy()
+    {
+        MenuButtonTrigger.OnOpenPanelRequested -= GoToMenu;
+    }
+
     //закрытие меню 
     private void CloseMenu(string name)
     {

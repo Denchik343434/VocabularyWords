@@ -167,8 +167,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 14
-  m_fontSizeBase: 14
+  m_fontSize: 28
+  m_fontSizeBase: 28
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -524,8 +524,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: "\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u0441\u043B\u043E\u0432\u043E
-    \u0432 \u0444\u043E\u0440\u043C\u0430\u0442\u0435 \"\u0421\u043B\u043E*\u0432\u043E\"\n(*
-    \u2014 \u0443\u0434\u0430\u0440\u043D\u0430\u044F \u0433\u043B\u0430\u0441\u043D\u0430\u044F)"
+    \u0432 \u0444\u043E\u0440\u043C\u0430\u0442\u0435 \"\u0421\u043B\u043E*\u0432\u043E\"
+    (* \u2014 \u0443\u0434\u0430\u0440\u043D\u0430\u044F \u0433\u043B\u0430\u0441\u043D\u0430\u044F)"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -625,6 +625,7 @@ GameObject:
   - component: {fileID: 4765771947597479266}
   - component: {fileID: 7417677305238983242}
   - component: {fileID: 4334577647460930348}
+  - component: {fileID: 6822257116235775294}
   m_Layer: 5
   m_Name: Word Panel
   m_TagString: Untagged
@@ -696,6 +697,25 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &6822257116235775294
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3335825637402785937}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19dd947aec8312578a292937a1fcd8f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _wordInput: {fileID: 8574564220762835968}
+  _explanationInput: {fileID: 2001608336022300834}
+  _emptyWarningIcon: {fileID: 1381387163690053531}
+  _clipButton: {fileID: 6542127733102301254}
+  _playButton: {fileID: 6569449353692963376}
+  _pauseButton: {fileID: 2643425344432594418}
+  _removeButton: {fileID: 580870181993961356}
 --- !u!1 &3402260836676063902
 GameObject:
   m_ObjectHideFlags: 0
@@ -909,8 +929,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 14
-  m_fontSizeBase: 14
+  m_fontSize: 28
+  m_fontSizeBase: 28
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1062,8 +1082,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 265, y: 0}
-  m_SizeDelta: {x: 500, y: 90}
+  m_AnchoredPosition: {x: 510, y: 25}
+  m_SizeDelta: {x: 1000, y: 45}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7293241114104035202
 CanvasRenderer:
@@ -1560,8 +1580,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 775, y: 0}
-  m_SizeDelta: {x: 500, y: 90}
+  m_AnchoredPosition: {x: 510, y: -25}
+  m_SizeDelta: {x: 1000, y: 45}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7257337765797515981
 CanvasRenderer:

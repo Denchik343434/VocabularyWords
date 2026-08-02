@@ -12,30 +12,6 @@ public class StorageManager
     //Путь к папке с библиотеками
     public static string LibrariesFolderPath => Path.Combine(Application.persistentDataPath, "Libraries");
 
-    // Проверяет наличие папки и создает её при необходимости
-    public static void InitializeStorage()
-    {
-        if (!Directory.Exists(LibrariesFolderPath))
-        {
-            Directory.CreateDirectory(LibrariesFolderPath);
-            Debug.Log($"[Storage] Папка создана по пути: {LibrariesFolderPath}");
-        }
-    }
-
-    // Получить имена всех созданных библиотек
-    public static List<string> GetLibraryNames()
-    {
-        List<string> libraryNames = new List<string>();
-        string[] files = Directory.GetFiles(LibrariesFolderPath, "*.vcl");
-
-        foreach (string file in files)
-        {
-            libraryNames.Add(Path.GetFileNameWithoutExtension(file));
-        }
-
-        return libraryNames;
-    }
-
     // Сохранить библиотеку в zip - .vcl с json 
     public static void SaveLibrary(LibraryData library)
     {
