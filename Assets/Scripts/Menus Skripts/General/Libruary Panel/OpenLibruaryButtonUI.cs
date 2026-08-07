@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class OpenLibruaryButtonUI : MonoBehaviour
 {
-    public static event Action<string> OnOpened;
+    public static event Action OnOpened;
     private string _libraryName;
     [SerializeField] private TMPro.TextMeshProUGUI _libraryNameText;
     public string LibraryName
@@ -21,6 +21,6 @@ public class OpenLibruaryButtonUI : MonoBehaviour
 
     void Start()
     {
-        GetComponent<Button>().onClick.AddListener(() => {OnOpened?.Invoke(_libraryName); Debug.Log($"Library {_libraryName} opened.");});
+        GetComponent<Button>().onClick.AddListener(() => {StorageManager.UnpackLibrariesToCache(LibraryName); OnOpened?.Invoke();});
     }
 }

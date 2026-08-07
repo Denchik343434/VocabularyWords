@@ -1033,7 +1033,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.000061035156}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: -0.000061035156}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &483507853
@@ -2035,6 +2035,7 @@ GameObject:
   - component: {fileID: 802819977}
   - component: {fileID: 802819976}
   - component: {fileID: 802819975}
+  - component: {fileID: 802819978}
   m_Layer: 5
   m_Name: Libruary Name InputField
   m_TagString: Untagged
@@ -2198,6 +2199,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 802819973}
   m_CullTransparentMesh: 1
+--- !u!114 &802819978
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 802819973}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a57c7a0a5b37ca2e9143c3b30549ac7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &816949969
 GameObject:
   m_ObjectHideFlags: 0
@@ -3347,7 +3360,7 @@ MonoBehaviour:
   _wordPanel: {fileID: 3335825637402785937, guid: ea88077691255136f978f036f4c68613, type: 3}
   _addWordPanel: {fileID: 7117018354343759121, guid: d5b70f5c6ce3faf2d8af9ad1aef125f3, type: 3}
   _content: {fileID: 1708280393}
-  _libruaryNameText: {fileID: 802819975}
+  _libruaryNameText: {fileID: 802819978}
 --- !u!1 &1313201772
 GameObject:
   m_ObjectHideFlags: 0
@@ -3900,7 +3913,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7bf80674298f777f9a6dc69de2aa4e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _libruaryPanel: {fileID: 5958829034051193300, guid: 9028272fbf2510484b29afd559b4282c, type: 3}
+  _libruaryPanel: {fileID: 2717742345685029637, guid: 82ebfad3c3adaf1e5960c9b74464a018, type: 3}
   _addLibruaryPanel: {fileID: 8628428365764096204, guid: 34e9e0326d24c7082be3342e3fe9f4f7, type: 3}
   _content: {fileID: 816949969}
 --- !u!1 &1539434076
@@ -4668,7 +4681,7 @@ MonoBehaviour:
   m_HorizontalScrollbar: {fileID: 0}
   m_VerticalScrollbar: {fileID: 2023018131}
   m_HorizontalScrollbarVisibility: 2
-  m_VerticalScrollbarVisibility: 2
+  m_VerticalScrollbarVisibility: 0
   m_HorizontalScrollbarSpacing: -3
   m_VerticalScrollbarSpacing: -3
   m_OnValueChanged:

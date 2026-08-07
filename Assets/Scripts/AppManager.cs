@@ -21,15 +21,13 @@ public class AppManager : MonoBehaviour
     [SerializeField] private float _minAspect = 4f / 3f;
     [SerializeField] private float _maxAspect = 16f / 9f;
 
-    private string _librariesFolderPath;
-
     private int _lastWidth;
     private int _lastHeight;
 
     void Awake()
     {
-        _librariesFolderPath = Path.Combine(Application.persistentDataPath, "Libraries");
-        InitializeStorage();
+        StorageManager.InitializeStorage();
+        StorageManager.ClearCache();
 
         QualitySettings.vSyncCount = 0; 
         Application.targetFrameRate = _targetFrameRate; 
@@ -76,16 +74,6 @@ public class AppManager : MonoBehaviour
         {
             _lastWidth = currentWidth;
             _lastHeight = currentHeight;
-        }
-    }
-
-        // Проверяет наличие папки и создает её при необходимости
-    private void InitializeStorage()
-    {
-        if (!Directory.Exists(_librariesFolderPath))
-        {
-            Directory.CreateDirectory(_librariesFolderPath);
-            Debug.Log($"[Storage] Папка создана по пути: {_librariesFolderPath}");
         }
     }
 }
