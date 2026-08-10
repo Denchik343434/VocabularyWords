@@ -12,9 +12,4 @@ public class NewLibruaryButtonUI : MonoBehaviour
     {
         GetComponent<Button>().onClick.AddListener(() => {StorageManager.EnsureCacheDirectoriesExist(); OnOpened?.Invoke();});
     }
-
-    void Update()
-    {
-        
-    }
 }

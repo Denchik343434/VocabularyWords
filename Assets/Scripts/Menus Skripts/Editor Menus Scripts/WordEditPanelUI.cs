@@ -22,7 +22,7 @@ public class WordEditPanelUI : MonoBehaviour
     [SerializeField] private Button _removeButton;
 
     // Путь к прикрепленному аудиофайлу
-    private string _attachedAudioPath = "";
+    //private string _attachedAudioPath = "";
 
     // поле и свойство для получения данный слова при сохранении библиотеки
     private WordData _word;

@@ -5,6 +5,8 @@ using System.IO;
 using System.IO.Compression;
 using TMPro;
 using System;
+using System.Linq;
+
 public class LibruaryOutputter : MonoBehaviour
 {
     [SerializeField] private GameObject _wordPanel;
@@ -16,15 +18,16 @@ public class LibruaryOutputter : MonoBehaviour
     void Awake()
     {
         OpenLibruaryButtonUI.OnOpened += OutputLibrary;
-        _newLibruaryButton.OnOpened += () => Instantiate(_addWordPanel, _content.transform);
+        _newLibruaryButton.OnOpened += OutputLibrary;
     }
 
     private void OutputLibrary()
     {
         LibraryData library = new LibraryData();
 
-        if (StorageManager.GetLoadedLibrariesFromCache() != null)
+        if (StorageManager.GetLoadedLibrariesFromCache().Length > 0)
         {
+            Debug.Log("Оно посчитало что массив не пустой");
             library = StorageManager.GetLoadedLibrariesFromCache()[0];
         }
 
@@ -36,7 +39,8 @@ public class LibruaryOutputter : MonoBehaviour
 
         if (_addWordPanel != null)
         {
-            Instantiate(_addWordPanel, _content.transform);
+            GameObject addWordPanel = Instantiate(_addWordPanel, _content.transform);
+            GetComponent<WordAdder>().AddWordPanel = addWordPanel;
         }
 
         _libruaryNameText.Text = library.LibraryName;
