@@ -2754,7 +2754,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1066422631
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3277,6 +3277,7 @@ GameObject:
   - component: {fileID: 1287599379}
   - component: {fileID: 1287599380}
   - component: {fileID: 1287599381}
+  - component: {fileID: 1287599382}
   m_Layer: 5
   m_Name: Words Editor Menu
   m_TagString: Untagged
@@ -3409,6 +3410,24 @@ MonoBehaviour:
   _content: {fileID: 1708280393}
   _WordEditPanel: {fileID: 3335825637402785937, guid: ea88077691255136f978f036f4c68613, type: 3}
   _addWordPanelPrefab: {fileID: 7117018354343759121, guid: d5b70f5c6ce3faf2d8af9ad1aef125f3, type: 3}
+--- !u!114 &1287599382
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1287599374}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4181de24c612f912b85640a45eccdda2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _loadingIcon: {fileID: 1066422630}
+  _savedIcon: {fileID: 1208790475}
+  _unsavedIcon: {fileID: 2104193542}
+  _libruaryNameText: {fileID: 802819978}
+  _saveButton: {fileID: 523607765}
+  _content: {fileID: 1708280393}
 --- !u!1 &1313201772
 GameObject:
   m_ObjectHideFlags: 0

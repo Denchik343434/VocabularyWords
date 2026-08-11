@@ -524,8 +524,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: "\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u0441\u043B\u043E\u0432\u043E
-    \u0432 \u0444\u043E\u0440\u043C\u0430\u0442\u0435 \"\u0421\u043B\u043E*\u0432\u043E\"
-    (* \u2014 \u0443\u0434\u0430\u0440\u043D\u0430\u044F \u0433\u043B\u0430\u0441\u043D\u0430\u044F)"
+    \u0432 \u0444\u043E\u0440\u043C\u0430\u0442\u0435 \"\u0421\u043B\u043E_\u0432\u043E\"
+    (_ \u2014 \u0443\u0434\u0430\u0440\u043D\u0430\u044F \u0433\u043B\u0430\u0441\u043D\u0430\u044F)"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -709,8 +709,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19dd947aec8312578a292937a1fcd8f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _wordInput: {fileID: 8574564220762835968}
-  _explanationInput: {fileID: 2001608336022300834}
+  _wordInput: {fileID: 6342147620134817979}
+  _explanationInput: {fileID: 2787991663810688986}
   _emptyWarningIcon: {fileID: 1381387163690053531}
   _clipButton: {fileID: 6542127733102301254}
   _playButton: {fileID: 6569449353692963376}
@@ -1058,6 +1058,7 @@ GameObject:
   - component: {fileID: 7293241114104035202}
   - component: {fileID: 631238080786483167}
   - component: {fileID: 8574564220762835968}
+  - component: {fileID: 6342147620134817979}
   m_Layer: 5
   m_Name: Word InputField
   m_TagString: Untagged
@@ -1221,6 +1222,18 @@ MonoBehaviour:
   m_isRichTextEditingAllowed: 0
   m_LineLimit: 0
   m_InputValidator: {fileID: 0}
+--- !u!114 &6342147620134817979
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4186934411079061100}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a57c7a0a5b37ca2e9143c3b30549ac7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4702158627747761019
 GameObject:
   m_ObjectHideFlags: 0
@@ -1556,6 +1569,7 @@ GameObject:
   - component: {fileID: 7257337765797515981}
   - component: {fileID: 9152281934772878367}
   - component: {fileID: 2001608336022300834}
+  - component: {fileID: 2787991663810688986}
   m_Layer: 5
   m_Name: Explanation InputField
   m_TagString: Untagged
@@ -1719,6 +1733,18 @@ MonoBehaviour:
   m_isRichTextEditingAllowed: 0
   m_LineLimit: 0
   m_InputValidator: {fileID: 0}
+--- !u!114 &2787991663810688986
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8012250029324861837}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a57c7a0a5b37ca2e9143c3b30549ac7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8243656062736200015
 GameObject:
   m_ObjectHideFlags: 0

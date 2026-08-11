@@ -12,7 +12,7 @@ public class LibruaryOutputter : MonoBehaviour
     [SerializeField] private GameObject _wordPanel;
     [SerializeField] private GameObject _addWordPanel;
     [SerializeField] private GameObject _content;
-    [SerializeField] private LibruaryNameTextUI _libruaryNameText;
+    [SerializeField] private InputfieldTMPText _libruaryNameText;
     [SerializeField] private NewLibruaryButtonUI _newLibruaryButton;
 
     void Awake()
@@ -23,13 +23,7 @@ public class LibruaryOutputter : MonoBehaviour
 
     private void OutputLibrary()
     {
-        LibraryData library = new LibraryData();
-
-        if (StorageManager.GetLoadedLibrariesFromCache().Length > 0)
-        {
-            Debug.Log("Оно посчитало что массив не пустой");
-            library = StorageManager.GetLoadedLibrariesFromCache()[0];
-        }
+        LibraryData library = StorageManager.GetLoadedLibrariesFromCache().FirstOrDefault() ?? new LibraryData();
 
         foreach (WordData word in library.Words)
         {

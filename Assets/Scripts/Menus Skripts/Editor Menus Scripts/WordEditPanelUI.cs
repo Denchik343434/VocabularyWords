@@ -11,8 +11,8 @@ using System.Linq;
 public class WordEditPanelUI : MonoBehaviour
 {
     // Ссылки на UI элементы 
-    [SerializeField] private TMP_InputField _wordInput;
-    [SerializeField] private TMP_InputField _explanationInput;
+    [SerializeField] private InputfieldTMPText _wordInput;
+    [SerializeField] private InputfieldTMPText _explanationInput;
     [SerializeField] private GameObject _emptyWarningIcon;
 
     [Space(15)]
@@ -48,11 +48,11 @@ public class WordEditPanelUI : MonoBehaviour
 
     private void Start()
     {
-        _wordInput.onEndEdit.AddListener(_ => {_emptyWarningIcon.SetActive(IsValid());});
+        _wordInput.OnTextChanged += () => _emptyWarningIcon.SetActive(IsValid());
         //TODO: добавить проверку на прикрипленный аудиофайл
 
-        _wordInput.onEndEdit.AddListener(_ => OnValuesUpdate());
-        _explanationInput.onEndEdit.AddListener(_ => _word = UpdateWord());
+        _wordInput.OnTextChanged += () => OnValuesUpdate();
+        _explanationInput.OnTextChanged += () => _word = UpdateWord();
         //TODO: добавить подпись на событие на изменение прикрипленного аудиофайла
          
         _clipButton.onClick.AddListener(OnClipClicked);
@@ -67,8 +67,8 @@ public class WordEditPanelUI : MonoBehaviour
     // Заполнение данными при загрузке существующей библиотеки, используется в свойстве
     private void Setup(WordData wordData)
     {
-        _wordInput.text = wordData.Word;
-        _explanationInput.text = wordData.Explanation;
+        _wordInput.Text = wordData.Word;
+        _explanationInput.Text = wordData.Explanation;
 
         //TODO: добавить заполнение пути к аудио файлу
         // attachedAudioPath = wordData.audio;
@@ -79,10 +79,9 @@ public class WordEditPanelUI : MonoBehaviour
     {
         return new WordData
         {
-            //очень умный код написанный неиронкой чтобы приводить строки к нормальному виду
-            Word =  Regex.Replace(_wordInput.text.Trim(), @"[^а-яё\*]", "", RegexOptions.IgnoreCase),
-            Explanation = new string(_explanationInput.text.Trim().Where(c => !char.IsControl(c) || c == '\n' || c == '\r' || c == '\t').ToArray())
-            // audio = attachedAudioPath
+            Word =  _wordInput.Text,
+            Explanation = _explanationInput.Text
+        // audio = attachedAudioPath
         };
     }
 
@@ -96,7 +95,7 @@ public class WordEditPanelUI : MonoBehaviour
     // Проверка, заполнены ли обязательные поля
     private bool IsValid()
     {
-        return string.IsNullOrWhiteSpace(_wordInput.text);
+        return string.IsNullOrWhiteSpace(_wordInput.Text);
 
         //TODO: добавить проверку на наличае аудио
     }
@@ -104,7 +103,8 @@ public class WordEditPanelUI : MonoBehaviour
     //метод обработки нажатия кнопки удаления
     private void OnRemoveClicked()
     {
-        Debug.Log("Типо удалено");
+        OnWordChanget?.Invoke();
+        Destroy(gameObject);
     }
 
     //метод для обработки нажатия на кнопку скрепки (выбор аудиофайла)

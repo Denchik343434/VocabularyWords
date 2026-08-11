@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using System.IO;
 using System;
 
-public class LibruaryNameTextUI : MonoBehaviour
+public class InputfieldTMPText : MonoBehaviour
 {
     public event Action OnTextChanged;
      private TextMeshProUGUI _libruaryNameText;

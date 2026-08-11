@@ -11,7 +11,7 @@ public class SaveWarning : MonoBehaviour
     
     [SerializeField] private Transform _content;
     [SerializeField] private GameObject _saveWarningImage;
-    [SerializeField] private LibruaryNameTextUI _LibruaryName;
+    [SerializeField] private InputfieldTMPText _LibruaryName;
 
     public event Action<bool> OnSaveWarningChanged;
 
