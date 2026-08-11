@@ -9,5 +9,6 @@ public class WordData
 {
     public string Word; // "приме*р"
     public string Explanation;
+    public string TestExplanation;
     //public string audio; // "primer.mp3"
 }

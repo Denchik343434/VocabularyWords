@@ -13,6 +13,7 @@ public class WordEditPanelUI : MonoBehaviour
     // Ссылки на UI элементы 
     [SerializeField] private InputfieldTMPText _wordInput;
     [SerializeField] private InputfieldTMPText _explanationInput;
+    [SerializeField] private InputfieldTMPText _testExplanation;
     [SerializeField] private GameObject _emptyWarningIcon;
 
     [Space(15)]
@@ -53,6 +54,7 @@ public class WordEditPanelUI : MonoBehaviour
 
         _wordInput.OnTextChanged += () => OnValuesUpdate();
         _explanationInput.OnTextChanged += () => _word = UpdateWord();
+        _testExplanation.OnTextChanged += () => _word = UpdateWord();
         //TODO: добавить подпись на событие на изменение прикрипленного аудиофайла
          
         _clipButton.onClick.AddListener(OnClipClicked);
@@ -69,6 +71,7 @@ public class WordEditPanelUI : MonoBehaviour
     {
         _wordInput.Text = wordData.Word;
         _explanationInput.Text = wordData.Explanation;
+        _testExplanation.Text = wordData.TestExplanation;
 
         //TODO: добавить заполнение пути к аудио файлу
         // attachedAudioPath = wordData.audio;
@@ -80,7 +83,8 @@ public class WordEditPanelUI : MonoBehaviour
         return new WordData
         {
             Word =  _wordInput.Text,
-            Explanation = _explanationInput.Text
+            Explanation = _explanationInput.Text,
+            TestExplanation = _testExplanation.Text
         // audio = attachedAudioPath
         };
     }
