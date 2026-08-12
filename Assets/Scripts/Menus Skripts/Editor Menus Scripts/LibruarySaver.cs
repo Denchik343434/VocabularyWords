@@ -6,6 +6,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 
 public class LibruarySaver : MonoBehaviour
 {
@@ -14,6 +15,7 @@ public class LibruarySaver : MonoBehaviour
     [SerializeField] private GameObject _unsavedIcon;
     [SerializeField] private InputfieldTMPText _libruaryNameText;
     [SerializeField] private Button _saveButton;
+    [SerializeField] private Button _saveToFolderButton;
     [SerializeField] private GameObject _content;
     private bool _isSavingPosible = false;
 
@@ -21,7 +23,31 @@ public class LibruarySaver : MonoBehaviour
     {
         WordEditPanelUI.OnWordChanget += OnLibruaryChanged;
         _libruaryNameText.OnTextChanged += OnLibruaryChanged;
-        _saveButton.onClick.AddListener(TrySaveLibruary);
+
+        _saveButton.onClick.AddListener(() => 
+        {
+            if (_isSavingPosible)
+            {
+                TrySaveLibruary();
+            }
+            else
+            Debug.Log("отказано");
+        });
+
+        _saveToFolderButton.onClick.AddListener(() =>
+        {
+            if (_isSavingPosible)
+            {
+                string SaveFolderPath = StorageManager.GetUserPath(StorageFilterType.Folder);
+                if (SaveFolderPath != null)
+                {
+                    TrySaveLibruary(SaveFolderPath);
+                }
+            }
+            else
+            Debug.Log("отказано");
+        });
+
         GetComponent<SaveWarning>().OnSaveWarningChanged += (isValid) => _isSavingPosible = isValid;
     }
 
@@ -33,19 +59,18 @@ public class LibruarySaver : MonoBehaviour
 
     private void TrySaveLibruary()
     {
-        if (!_isSavingPosible)
-        {
-            Debug.Log("Отказано");
-            return;
-        }
+        TrySaveLibruary(default);
+    }
 
+    private void TrySaveLibruary(string saveFolderPath = null)
+    {
         _loadingIcon.SetActive(true);
         _unsavedIcon.SetActive(false);
         _savedIcon.SetActive(false);
 
         try
         {
-            SaveLibrary();
+            SaveLibrary(saveFolderPath);
             
             _savedIcon.SetActive(true);
         }
@@ -68,6 +93,11 @@ public class LibruarySaver : MonoBehaviour
 
     private void SaveLibrary()
     {
+        SaveLibrary(default);
+    }
+
+    private void SaveLibrary(string saveFolderPath = null)
+    {
         LibraryData library = CreateLibruary();
         string lastName = StorageManager.GetLoadedLibrariesFromCache().FirstOrDefault()?.LibraryName;
 
@@ -78,7 +108,7 @@ public class LibruarySaver : MonoBehaviour
             StorageManager.DeleteJsonFromCache(lastName);
         }
 
-        StorageManager.SaveLibrary(library.LibraryName);
+        StorageManager.SaveLibrary(saveFolderPath);
 
         if (lastName != null && lastName != library.LibraryName)
         {

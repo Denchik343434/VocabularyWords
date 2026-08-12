@@ -4,135 +4,13 @@ using System.IO;
 using System.IO.Compression;
 using System.Text;
 using UnityEngine;
+using SFB;
 
 // TODO: добавить сохранение аудио файлов в zip архиве
 
 // скрипт с статичными методами для использования в компонентах, для работы с файлами
 public class StorageManager
 {
-    /*
-    //Путь к папке с библиотеками
-    private static string _librariesFolderPath => Path.Combine(Application.persistentDataPath, "Libraries");
-
-    // Сохранить библиотеку в zip - .vcl с json
-    // думать 
-    public static void SaveLibrary(LibraryData library)
-    {
-
-        string tempFolder = Path.Combine(Application.temporaryCachePath, library.LibraryName);
-        string vclFilePath = Path.Combine(_librariesFolderPath, library.LibraryName + ".vcl");
-
-        // 1. Создаем чистую временную папку для сборки
-        if (Directory.Exists(tempFolder))
-        {
-            Directory.Delete(tempFolder, true);
-        }
-        Directory.CreateDirectory(tempFolder);
-
-        // 2. Преобразуем объект в JSON и пишем во временную папку
-        string jsonText = JsonUtility.ToJson(library, true);
-        string jsonPath = Path.Combine(tempFolder, "library.json");
-        File.WriteAllText(jsonPath, jsonText);
-
-        // 3. Если старый файл .vcl существует — удаляем
-        if (File.Exists(vclFilePath))
-        {
-            File.Delete(vclFilePath);
-        }
-
-        // 4. Пакуем временную папку в .vcl архив
-        ZipFile.CreateFromDirectory(tempFolder, vclFilePath);
-
-        // 5. Чистим за собой временную папку
-        Directory.Delete(tempFolder, true);
-
-        Debug.Log($"[Storage] Библиотека '{library.LibraryName}.vcl' успешно сохранена!");
-    }
-
-    // Загрузить библиотеку по имени
-    // оставляем
-    public static LibraryData GetLibrary(string libraryName)
-    {
-        string vclFilePath = Path.Combine(_librariesFolderPath, libraryName + ".vcl");
-
-        string tempFolder = Path.Combine(Application.temporaryCachePath, "Unpacked_" + libraryName);
-
-        // 1. Готовим чистую папку для распаковки
-        if (Directory.Exists(tempFolder))
-        {
-            Directory.Delete(tempFolder, true);
-        }
-
-        // 2. Распаковываем .vcl
-        ZipFile.ExtractToDirectory(vclFilePath, tempFolder);
-
-        // 3. Читаем library.json из архива
-        string jsonPath = Path.Combine(tempFolder, "library.json");
-        if (!File.Exists(jsonPath))
-        {
-            Debug.LogError($"[Storage] В архиве {libraryName}.vcl не найден library.json!");
-            Directory.Delete(tempFolder, true);
-            return null;
-        }
-        string jsonText = File.ReadAllText(jsonPath);
-        LibraryData loadedLibrary = JsonUtility.FromJson<LibraryData>(jsonText);
-
-        // 4. Чистим за собой временную папку
-        Directory.Delete(tempFolder, true);
-
-        return loadedLibrary;
-    }
-
-    // Удалить библиотеку по имени
-    // оставляем
-    public static void DeleteLibrary(string libraryName)
-    {
-        string vclFilePath = Path.Combine(_librariesFolderPath, libraryName + ".vcl");
-        if (File.Exists(vclFilePath))
-        {
-            File.Delete(vclFilePath);
-            Debug.Log($"[Storage] Библиотека '{libraryName}.vcl' успешно удалена!");
-        }
-        else
-        {
-            Debug.LogWarning($"[Storage] Библиотека '{libraryName}.vcl' не найдена для удаления!");
-        }
-    }
-
-    
-    public static void AddLibrary(string _libruaryPath)
-    {
-        File file = new
-    }
-    
-
-    // Проверяет наличие папки и создает её при необходимости
-    // оставляем
-    public static void InitializeStorage()
-    {
-        if (!Directory.Exists(_librariesFolderPath))
-        {
-            Directory.CreateDirectory(_librariesFolderPath);
-            Debug.Log($"[Storage] Папка создана по пути: {_librariesFolderPath}");
-        }
-    }
-
-    // Получить имена всех библиотек
-    public static List<string> GetLibraryNames()
-    {
-        List<string> libraryNames = new List<string>();
-        string[] files = Directory.GetFiles(_librariesFolderPath, "*.vcl");
-
-        foreach (string file in files)
-        {
-            libraryNames.Add(Path.GetFileNameWithoutExtension(file));
-        }
-
-        return libraryNames;
-    }
-    */
-
-
     // Путь к постоянному хранилищу с .vcl архивами
     private static string LibrariesFolderPath => Path.Combine(Application.persistentDataPath, "Libraries");
 
@@ -259,11 +137,15 @@ public class StorageManager
     /// <summary>
     /// Сохраняет библиотеку обратно из кэша в архив .vcl в persistentDataPath.
     /// </summary>
-    public static void SaveLibrary(string libraryName)
+    
+    public static void SaveLibrary(string saveFolderPath = null)
     {
+        saveFolderPath ??= LibrariesFolderPath;
+        string libraryName = GetLoadedLibrariesFromCache()[0].LibraryName;
+
         string jsonPath = Path.Combine(CacheJsonsFolderPath, libraryName + ".json");
         string audioFolderPath = Path.Combine(CacheAudioFolderPath, libraryName);
-        string vclFilePath = Path.Combine(LibrariesFolderPath, libraryName + ".vcl");
+        string vclFilePath = Path.Combine(saveFolderPath, libraryName + ".vcl");
 
         if (!File.Exists(jsonPath))
         {
@@ -445,4 +327,79 @@ public class StorageManager
         }
     }
 
+    /// <summary>
+    /// Вызывает системный проводник. Возвращает выбранный путь или null, если пользователь закрыл окно.
+    /// </summary>
+    /// <param name="filterType">Что нужно выбрать: StorageFilterType.Archive, Audio, Folder или AnyFile</param>
+    /// <param name="title">Заголовок окна (необязательно)</param>
+    public static string GetUserPath(StorageFilterType filterType = StorageFilterType.Archive)
+    {
+        try
+        {
+            string title = "ошибка названия";
+
+            // 1. Если требуется выбрать именно ПАПКУ
+            if (filterType == StorageFilterType.Folder)
+            {
+                title = "Выберете папку";
+                string[] folderPaths = StandaloneFileBrowser.OpenFolderPanel(title, "", multiselect: false);
+                return (folderPaths != null && folderPaths.Length > 0 && !string.IsNullOrEmpty(folderPaths[0])) 
+                    ? folderPaths[0] 
+                    : null;
+            }
+
+            // 2. Настраиваем фильтрацию для ФАЙЛОВ
+            ExtensionFilter[] extensions;
+
+            switch (filterType)
+            {
+                case StorageFilterType.Archive:
+                    title = "Выберете файл библиотеки";
+                    extensions = new[] {
+                        new ExtensionFilter("Архивы библиотеки", "vcl", "zip", "rar", "7z"),
+                        new ExtensionFilter("Все файлы", "*")
+                    };
+                    break;
+
+                case StorageFilterType.Audio:
+                    title = "Выберете аудио файл";
+                    extensions = new[] {
+                        new ExtensionFilter("Аудиофайлы", "mp3", "wav", "ogg", "flac", "aiff"),
+                        new ExtensionFilter("Все файлы", "*")
+                    };
+                    break;
+
+                default: // AnyFile
+                    title = "Выберете файл";
+                    extensions = new[] {
+                        new ExtensionFilter("Все файлы", "*")
+                    };
+                    break;
+            }
+
+            // 3. Открываем проводник для файлов
+            string[] filePaths = StandaloneFileBrowser.OpenFilePanel(title, "", extensions, multiselect: false);
+
+            if (filePaths != null && filePaths.Length > 0 && !string.IsNullOrEmpty(filePaths[0]))
+            {
+                Debug.Log($"[Storage] Выбран путь: {filePaths[0]}");
+                return filePaths[0];
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"[Storage] Ошибка при вызове проводника: {ex.Message}");
+        }
+
+        Debug.Log("[Storage] Выбор отменен пользователем.");
+        return null;
+    }
+}
+
+public enum StorageFilterType
+{
+    Archive,  // Выбор архивов (.vcl, .zip)
+    Audio,    // Выбор звуков (.mp3, .wav, .ogg и т.д.)
+    Folder,   // Выбор ПАПКИ
+    AnyFile   // Выбор вообще любого файла
 }

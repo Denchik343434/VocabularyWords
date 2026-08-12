@@ -107,8 +107,9 @@ public class WordEditPanelUI : MonoBehaviour
     //метод обработки нажатия кнопки удаления
     private void OnRemoveClicked()
     {
-        OnWordChanget?.Invoke();
+        transform.SetParent(null);
         Destroy(gameObject);
+        OnWordChanget?.Invoke();
     }
 
     //метод для обработки нажатия на кнопку скрепки (выбор аудиофайла)
