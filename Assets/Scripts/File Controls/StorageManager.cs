@@ -5,6 +5,8 @@ using System.IO.Compression;
 using System.Text;
 using UnityEngine;
 using SFB;
+using System.Threading.Tasks;
+using System.Threading;
 
 // TODO: добавить сохранение аудио файлов в zip архиве
 
@@ -138,7 +140,7 @@ public class StorageManager
     /// Сохраняет библиотеку обратно из кэша в архив .vcl в persistentDataPath.
     /// </summary>
     
-    public static void SaveLibrary(string saveFolderPath = null)
+    public static async Task SaveLibrary(string saveFolderPath = null)
     {
         saveFolderPath ??= LibrariesFolderPath;
         string libraryName = GetLoadedLibrariesFromCache()[0].LibraryName;
@@ -146,6 +148,7 @@ public class StorageManager
         string jsonPath = Path.Combine(CacheJsonsFolderPath, libraryName + ".json");
         string audioFolderPath = Path.Combine(CacheAudioFolderPath, libraryName);
         string vclFilePath = Path.Combine(saveFolderPath, libraryName + ".vcl");
+        string tempCachFolder = Application.temporaryCachePath;
 
         if (!File.Exists(jsonPath))
         {
@@ -153,10 +156,9 @@ public class StorageManager
             return;
         }
 
-        try
-        {
+        await Task.Run(async () => {
             // Временная папка для сборки
-            string tempPackFolder = Path.Combine(Application.temporaryCachePath, "TempPack_" + libraryName);
+            string tempPackFolder = Path.Combine(tempCachFolder, "TempPack_" + libraryName);
             if (Directory.Exists(tempPackFolder))
             {
                 Directory.Delete(tempPackFolder, true);
@@ -177,7 +179,7 @@ public class StorageManager
             }
 
             // Создаем временный zip с поддержкой UTF-8
-            string tempZipPath = Path.Combine(Application.temporaryCachePath, libraryName + "_temp.vcl");
+            string tempZipPath = Path.Combine(tempCachFolder, libraryName + "_temp.vcl");
             if (File.Exists(tempZipPath)) File.Delete(tempZipPath);
 
             ZipFile.CreateFromDirectory(tempPackFolder, tempZipPath, System.IO.Compression.CompressionLevel.Optimal, false, Encoding.UTF8);
@@ -191,13 +193,9 @@ public class StorageManager
 
             // Чистим папку сборки
             Directory.Delete(tempPackFolder, true);
+        });
 
-            Debug.Log($"[Storage] Библиотека '{libraryName}.vcl' успешно сохранена из кэша!");
-        }
-        catch (Exception ex)
-        {
-            Debug.LogError($"[Storage] Ошибка при сохранении библиотеки '{libraryName}': {ex.Message}");
-        }
+        Debug.Log("Всё норм?");
     }
 
     /// <summary>

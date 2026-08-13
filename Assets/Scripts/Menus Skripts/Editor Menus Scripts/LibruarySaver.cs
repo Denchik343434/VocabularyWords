@@ -17,11 +17,13 @@ public class LibruarySaver : MonoBehaviour
     [SerializeField] private Button _saveButton;
     [SerializeField] private Button _saveToFolderButton;
     [SerializeField] private GameObject _content;
+    [SerializeField] private CanvasGroup _canvasGroup;
     private bool _isSavingPosible = false;
+    private CancellationTokenSource _saveCts;
 
     void Start()
     {
-        WordEditPanelUI.OnWordChanget += OnLibruaryChanged;
+        WordPanelUI.OnValuesChanged += OnLibruaryChanged;
         _libruaryNameText.OnTextChanged += OnLibruaryChanged;
 
         _saveButton.onClick.AddListener(() => 
@@ -62,17 +64,30 @@ public class LibruarySaver : MonoBehaviour
         TrySaveLibruary(default);
     }
 
-    private void TrySaveLibruary(string saveFolderPath = null)
+    private async void TrySaveLibruary(string saveFolderPath)
     {
+        _saveCts?.Cancel();
+        _saveCts = new CancellationTokenSource();
+        var token = _saveCts.Token;
+
+        _canvasGroup.alpha = 0.5f;
+        _canvasGroup.blocksRaycasts = false;
         _loadingIcon.SetActive(true);
         _unsavedIcon.SetActive(false);
         _savedIcon.SetActive(false);
 
         try
         {
-            SaveLibrary(saveFolderPath);
+            Debug.Log("Сохранение начато");
+            await SaveLibraryAsync(saveFolderPath, token);
             
             _savedIcon.SetActive(true);
+            Debug.Log("Сохранение завершено");
+        }
+        catch (OperationCanceledException)
+        {
+            Debug.Log("Сохранение отменено");
+            _unsavedIcon.SetActive(true);
         }
         catch (Exception ex)
         {
@@ -82,22 +97,23 @@ public class LibruarySaver : MonoBehaviour
         finally
         {
             _loadingIcon.SetActive(false);
+            _canvasGroup.blocksRaycasts = true;
+            _canvasGroup.alpha = 1f;
+            _saveCts?.Dispose();
+            _saveCts = null;
         }
     }
 
 
     void OnDestroy()
     {
-        WordEditPanelUI.OnWordChanget -= OnLibruaryChanged;
+        WordPanelUI.OnValuesChanged -= OnLibruaryChanged;
     }
 
-    private void SaveLibrary()
+    private async Task SaveLibraryAsync(string saveFolderPath, CancellationToken token)
     {
-        SaveLibrary(default);
-    }
+        token.ThrowIfCancellationRequested();
 
-    private void SaveLibrary(string saveFolderPath = null)
-    {
         LibraryData library = CreateLibruary();
         string lastName = StorageManager.GetLoadedLibrariesFromCache().FirstOrDefault()?.LibraryName;
 
@@ -108,13 +124,14 @@ public class LibruarySaver : MonoBehaviour
             StorageManager.DeleteJsonFromCache(lastName);
         }
 
-        StorageManager.SaveLibrary(saveFolderPath);
+        await StorageManager.SaveLibrary(saveFolderPath);
+
+        token.ThrowIfCancellationRequested();
 
         if (lastName != null && lastName != library.LibraryName)
         {
             StorageManager.DeleteLibrary(lastName);
         }
-
     }
     private LibraryData CreateLibruary()
     {
@@ -122,7 +139,7 @@ public class LibruarySaver : MonoBehaviour
 
         foreach (Transform child in _content.transform)
         {
-            if(child.TryGetComponent<WordEditPanelUI>(out var wordEditPanel))
+            if(child.TryGetComponent<WordPanelUI>(out var wordEditPanel))
             {
                 words.Add(wordEditPanel.Word);
             }

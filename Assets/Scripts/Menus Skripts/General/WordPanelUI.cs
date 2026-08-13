@@ -7,8 +7,9 @@ using System;
 using Unity.VisualScripting;
 using System.Text.RegularExpressions;
 using System.Linq;
-// компонент панели редактирования слова
-public class WordEditPanelUI : MonoBehaviour
+
+// компонент панели редактирования слова 
+public class WordPanelUI : MonoBehaviour
 {
     // Ссылки на UI элементы 
     [SerializeField] private InputfieldTMPText _wordInput;
@@ -42,7 +43,7 @@ public class WordEditPanelUI : MonoBehaviour
     }
 
     //Событие на изменение слова
-    public static event Action OnWordChanget;
+    public static event Action OnValuesChanged;
 
     // свойсто на наличае нужных полей для проверки на возможность сохранения
     public bool IsEmpty => IsValid();
@@ -63,7 +64,7 @@ public class WordEditPanelUI : MonoBehaviour
         _removeButton.onClick.AddListener(OnRemoveClicked);
 
         OnValuesUpdate();
-        _emptyWarningIcon.SetActive(IsValid()); //чтото с вс кодом не так
+        _emptyWarningIcon.SetActive(IsValid()); 
     }
 
     // Заполнение данными при загрузке существующей библиотеки, используется в свойстве
@@ -93,7 +94,7 @@ public class WordEditPanelUI : MonoBehaviour
     private void OnValuesUpdate()
     {
         _word = UpdateWord();
-        OnWordChanget?.Invoke();
+        OnValuesChanged?.Invoke();
     }
 
     // Проверка, заполнены ли обязательные поля
@@ -109,7 +110,7 @@ public class WordEditPanelUI : MonoBehaviour
     {
         transform.SetParent(null);
         Destroy(gameObject);
-        OnWordChanget?.Invoke();
+        OnValuesChanged?.Invoke();
     }
 
     //метод для обработки нажатия на кнопку скрепки (выбор аудиофайла)

@@ -17,7 +17,7 @@ public class SaveWarning : MonoBehaviour
 
     void Start()
     {
-        WordEditPanelUI.OnWordChanget += UpdateValidate;
+        WordPanelUI.OnValuesChanged += UpdateValidate;
         _LibruaryName.OnTextChanged += UpdateValidate;
     }
 
@@ -40,7 +40,7 @@ public class SaveWarning : MonoBehaviour
 
             foreach (Transform panel in _content)
             {
-                if (panel.TryGetComponent<WordEditPanelUI>(out var wordPanel))
+                if (panel.TryGetComponent<WordPanelUI>(out var wordPanel))
                 {
                     if (wordPanel.IsEmpty || _content.childCount == 0)
                     {
@@ -56,6 +56,6 @@ public class SaveWarning : MonoBehaviour
 
     void OnDestroy()
     {
-        WordEditPanelUI.OnWordChanget -= UpdateValidate;
+        WordPanelUI.OnValuesChanged -= UpdateValidate;
     }
 }

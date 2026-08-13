@@ -29,7 +29,7 @@ public class WordAdder : MonoBehaviour
     private void AddWord()
     {
         GameObject newWord = Instantiate(_WordEditPanel, _content.transform);
-        newWord.GetComponent<WordEditPanelUI>().Word = new WordData();
+        newWord.GetComponent<WordPanelUI>().Word = new WordData();
         _addWordPanel.GetComponent<Button>().onClick.RemoveAllListeners();
         Destroy(_addWordPanel);
         AddWordPanel = Instantiate(_addWordPanelPrefab, _content.transform);

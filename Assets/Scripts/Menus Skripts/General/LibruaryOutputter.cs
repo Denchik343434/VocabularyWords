@@ -28,7 +28,7 @@ public class LibruaryOutputter : MonoBehaviour
         foreach (WordData word in library.Words)
         {
             GameObject wordButton = Instantiate(_wordPanel, _content.transform);
-            wordButton.GetComponentInChildren<WordEditPanelUI>().Word = word;
+            wordButton.GetComponentInChildren<WordPanelUI>().Word = word;
         }
 
         if (_addWordPanel != null)
