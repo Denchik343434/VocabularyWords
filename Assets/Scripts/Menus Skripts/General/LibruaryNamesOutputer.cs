@@ -2,12 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
-using System.IO.Compression; 
+using System.IO.Compression;
+using UnityEngine.UI; 
 
-public class LibruryOutputter : MonoBehaviour
+public class LibruaryNamesOutputter : MonoBehaviour
 {
     [SerializeField] private GameObject _libruaryPanel;
-    [SerializeField] private GameObject _addLibruaryPanel;
+    [SerializeField] private GameObject _addLibruaryButtonPrefab;
+    private Button _addLibruaryButton = null; 
     [SerializeField] private GameObject _content;
     private List<string> _libraryNames = new List<string>();
 
@@ -38,7 +40,20 @@ public class LibruryOutputter : MonoBehaviour
             libraryPanel.GetComponent<LibruaryPanelUI>().LibraryName = libraryName;
         }
 
-            Instantiate(_addLibruaryPanel, _content.transform);
+        if (_addLibruaryButton != null)
+            _addLibruaryButton.onClick.RemoveAllListeners();
+        _addLibruaryButton = Instantiate(_addLibruaryButtonPrefab, _content.transform).GetComponent<Button>();
+        _addLibruaryButton.onClick.AddListener(() => 
+        {
+            Debug.Log("оно тыкаеться");
+            string targetPath = StorageManager.GetUserPath(StorageFilterType.Library);
+
+            if (targetPath != null)
+                StorageManager.AddLibrary(targetPath);
+            else
+                return;
+            UpdateLibraryList();
+        });
     }
 
     private void DestroyAllLibraryButtons()

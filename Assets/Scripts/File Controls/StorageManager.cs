@@ -14,24 +14,24 @@ using System.Threading;
 public class StorageManager
 {
     // Путь к постоянному хранилищу с .vcl архивами
-    private static string LibrariesFolderPath => Path.Combine(Application.persistentDataPath, "Libraries");
+    private static string _librariesFolderPath => Path.Combine(Application.persistentDataPath, "Libraries");
 
     // Корневая рабочая папка в кэше для текущей сессии
-    private static string CacheFolderPath => Path.Combine(Application.temporaryCachePath, "CacheSession");
+    private static string _cacheFolderPath => Path.Combine(Application.temporaryCachePath, "CacheSession");
 
     // Внутренние подпапки в кэше для порядка
-    private static string CacheJsonsFolderPath => Path.Combine(CacheFolderPath, "JSONs");
-    private static string CacheAudioFolderPath => Path.Combine(CacheFolderPath, "Audio");
+    private static string _cacheJsonsFolderPath => Path.Combine(_cacheFolderPath, "JSONs");
+    private static string _cacheAudioFolderPath => Path.Combine(_cacheFolderPath, "Audio");
 
     /// <summary>
     /// Инициализация хранилища: создаёт папку с библиотеками и чистит старый кэш при запуске.
     /// </summary>
     public static void InitializeStorage()
     {
-        if (!Directory.Exists(LibrariesFolderPath))
+        if (!Directory.Exists(_librariesFolderPath))
         {
-            Directory.CreateDirectory(LibrariesFolderPath);
-            Debug.Log($"[Storage] Папка библиотек создана: {LibrariesFolderPath}");
+            Directory.CreateDirectory(_librariesFolderPath);
+            Debug.Log($"[Storage] Папка библиотек создана: {_librariesFolderPath}");
         }
     }
 
@@ -44,7 +44,7 @@ public class StorageManager
 
         foreach (string libName in libraryNames)
         {
-            string vclFilePath = Path.Combine(LibrariesFolderPath, libName + ".vcl");
+            string vclFilePath = Path.Combine(_librariesFolderPath, libName + ".vcl");
 
             if (!File.Exists(vclFilePath))
             {
@@ -68,7 +68,7 @@ public class StorageManager
                 string tempJsonPath = Path.Combine(tempUnpackPath, "library.json");
                 if (File.Exists(tempJsonPath))
                 {
-                    string targetJsonPath = Path.Combine(CacheJsonsFolderPath, libName + ".json");
+                    string targetJsonPath = Path.Combine(_cacheJsonsFolderPath, libName + ".json");
                     if (File.Exists(targetJsonPath)) File.Delete(targetJsonPath);
                     File.Move(tempJsonPath, targetJsonPath);
                 }
@@ -78,7 +78,7 @@ public class StorageManager
                 }
 
                 // 3. Переносим остальные файлы (аудио и т.д.) в CacheSession/Audio/ИмяБиблиотеки/
-                string targetAudioFolder = Path.Combine(CacheAudioFolderPath, libName);
+                string targetAudioFolder = Path.Combine(_cacheAudioFolderPath, libName);
                 if (Directory.Exists(targetAudioFolder))
                 {
                     Directory.Delete(targetAudioFolder, true);
@@ -108,12 +108,12 @@ public class StorageManager
     /// </summary>
     public static LibraryData[] GetLoadedLibrariesFromCache()
     {
-        if (!Directory.Exists(CacheJsonsFolderPath))
+        if (!Directory.Exists(_cacheJsonsFolderPath))
         {
             return new LibraryData[0];
         }
 
-        string[] jsonFiles = Directory.GetFiles(CacheJsonsFolderPath, "*.json");
+        string[] jsonFiles = Directory.GetFiles(_cacheJsonsFolderPath, "*.json");
         List<LibraryData> resultList = new List<LibraryData>();
 
         foreach (string jsonPath in jsonFiles)
@@ -142,11 +142,11 @@ public class StorageManager
     
     public static async Task SaveLibrary(string saveFolderPath = null)
     {
-        saveFolderPath ??= LibrariesFolderPath;
+        saveFolderPath ??= _librariesFolderPath;
         string libraryName = GetLoadedLibrariesFromCache()[0].LibraryName;
 
-        string jsonPath = Path.Combine(CacheJsonsFolderPath, libraryName + ".json");
-        string audioFolderPath = Path.Combine(CacheAudioFolderPath, libraryName);
+        string jsonPath = Path.Combine(_cacheJsonsFolderPath, libraryName + ".json");
+        string audioFolderPath = Path.Combine(_cacheAudioFolderPath, libraryName);
         string vclFilePath = Path.Combine(saveFolderPath, libraryName + ".vcl");
         string tempCachFolder = Application.temporaryCachePath;
 
@@ -156,7 +156,7 @@ public class StorageManager
             return;
         }
 
-        await Task.Run(async () => {
+        await Task.Run(() => {
             // Временная папка для сборки
             string tempPackFolder = Path.Combine(tempCachFolder, "TempPack_" + libraryName);
             if (Directory.Exists(tempPackFolder))
@@ -193,7 +193,9 @@ public class StorageManager
 
             // Чистим папку сборки
             Directory.Delete(tempPackFolder, true);
+
         });
+        //await Task.Delay(3000);
 
         Debug.Log("Всё норм?");
     }
@@ -204,11 +206,11 @@ public class StorageManager
     /// </summary>
     public static void ClearCache()
     {
-        if (Directory.Exists(CacheFolderPath))
+        if (Directory.Exists(_cacheFolderPath))
         {
             try
             {
-                Directory.Delete(CacheFolderPath, true);
+                Directory.Delete(_cacheFolderPath, true);
                 Debug.Log("[Storage] Кэш сессии успешно очищен.");
             }
             catch (Exception ex)
@@ -223,7 +225,7 @@ public class StorageManager
     /// </summary>
     public static void DeleteLibrary(string libraryName)
     {
-        string vclFilePath = Path.Combine(LibrariesFolderPath, libraryName + ".vcl");
+        string vclFilePath = Path.Combine(_librariesFolderPath, libraryName + ".vcl");
         if (File.Exists(vclFilePath))
         {
             File.Delete(vclFilePath);
@@ -241,9 +243,9 @@ public class StorageManager
     public static List<string> GetLibraryNames()
     {
         List<string> libraryNames = new List<string>();
-        if (!Directory.Exists(LibrariesFolderPath)) return libraryNames;
+        if (!Directory.Exists(_librariesFolderPath)) return libraryNames;
 
-        string[] files = Directory.GetFiles(LibrariesFolderPath, "*.vcl");
+        string[] files = Directory.GetFiles(_librariesFolderPath, "*.vcl");
         foreach (string file in files)
         {
             libraryNames.Add(Path.GetFileNameWithoutExtension(file));
@@ -257,11 +259,11 @@ public class StorageManager
     /// </summary>
     public static void EnsureCacheDirectoriesExist()
     {
-        if (!Directory.Exists(CacheJsonsFolderPath))
-            Directory.CreateDirectory(CacheJsonsFolderPath);
+        if (!Directory.Exists(_cacheJsonsFolderPath))
+            Directory.CreateDirectory(_cacheJsonsFolderPath);
 
-        if (!Directory.Exists(CacheAudioFolderPath))
-            Directory.CreateDirectory(CacheAudioFolderPath);
+        if (!Directory.Exists(_cacheAudioFolderPath))
+            Directory.CreateDirectory(_cacheAudioFolderPath);
     }
 
     /// <summary>
@@ -280,7 +282,7 @@ public class StorageManager
             EnsureCacheDirectoriesExist();
 
             // Формируем путь: CacheSession/JSONs/ИмяБиблиотеки.json
-            string jsonPath = Path.Combine(CacheJsonsFolderPath, library.LibraryName + ".json");
+            string jsonPath = Path.Combine(_cacheJsonsFolderPath, library.LibraryName + ".json");
 
             // Преобразуем объект в JSON текст (true - с красивыми отступами)
             string jsonText = JsonUtility.ToJson(library, true);
@@ -307,7 +309,7 @@ public class StorageManager
 
         try
         {
-            string jsonPath = Path.Combine(CacheJsonsFolderPath, libraryName + ".json");
+            string jsonPath = Path.Combine(_cacheJsonsFolderPath, libraryName + ".json");
 
             if (File.Exists(jsonPath))
             {
@@ -330,7 +332,7 @@ public class StorageManager
     /// </summary>
     /// <param name="filterType">Что нужно выбрать: StorageFilterType.Archive, Audio, Folder или AnyFile</param>
     /// <param name="title">Заголовок окна (необязательно)</param>
-    public static string GetUserPath(StorageFilterType filterType = StorageFilterType.Archive)
+    public static string GetUserPath(StorageFilterType filterType = StorageFilterType.Library)
     {
         try
         {
@@ -351,10 +353,10 @@ public class StorageManager
 
             switch (filterType)
             {
-                case StorageFilterType.Archive:
+                case StorageFilterType.Library:
                     title = "Выберете файл библиотеки";
                     extensions = new[] {
-                        new ExtensionFilter("Архивы библиотеки", "vcl", "zip", "rar", "7z"),
+                        new ExtensionFilter("Архивы библиотеки", "vcl"),
                         new ExtensionFilter("Все файлы", "*")
                     };
                     break;
@@ -392,11 +394,82 @@ public class StorageManager
         Debug.Log("[Storage] Выбор отменен пользователем.");
         return null;
     }
+
+    /// <summary>
+    /// Копирует аудиофайл по указанному пути в папку кэша аудио.
+    /// Переименовывает файл согласно переданному имени, сохраняя исходное расширение.
+    /// Если в кэше загружена библиотека — файл кладётся в её подпапку.
+    /// Возвращает полный путь к скопированному файлу в кэше или null при ошибке.
+    /// </summary>
+    public static string ClipAudio(string name, string path)
+    {
+        if (!File.Exists(path))
+        {
+            Debug.LogError($"[Storage] Исходный аудиофайл не найден: {path}");
+            return null;
+        }
+
+        try
+        {
+            EnsureCacheDirectoriesExist();
+
+            string targetFolder = Path.Combine(_cacheAudioFolderPath, GetLoadedLibrariesFromCache()[0].LibraryName);
+            if (!Directory.Exists(targetFolder))
+                Directory.CreateDirectory(targetFolder);
+
+            string ext = Path.GetExtension(path);
+            string fileName = name;
+            if (!name.EndsWith(ext, StringComparison.OrdinalIgnoreCase))
+                fileName += ext;
+
+            string destPath = Path.Combine(targetFolder, fileName);
+
+            File.Copy(path, destPath, true);
+
+            Debug.Log($"[Storage] Аудиофайл '{fileName}' скопирован в кэш: {destPath}");
+            return destPath;
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"[Storage] Ошибка при копировании аудио: {ex.Message}");
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Копирует файл библиотеки (.vcl) из указанного пути в основное хранилище библиотек.
+    /// Если файл с таким именем уже есть — перезаписывает.
+    /// </summary>
+    public static void AddLibrary(string path)
+    {
+        if (!File.Exists(path))
+        {
+            Debug.LogError($"[Storage] Файл библиотеки не найден: {path}");
+            return;
+        }
+
+        try
+        {
+            if (!Directory.Exists(_librariesFolderPath))
+                Directory.CreateDirectory(_librariesFolderPath);
+
+            string fileName = Path.GetFileName(path);
+            string destPath = Path.Combine(_librariesFolderPath, fileName);
+
+            File.Copy(path, destPath, true);
+
+            Debug.Log($"[Storage] Библиотека '{fileName}' добавлена в хранилище.");
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"[Storage] Ошибка при добавлении библиотеки: {ex.Message}");
+        }
+    }
 }
 
 public enum StorageFilterType
 {
-    Archive,  // Выбор архивов (.vcl, .zip)
+    Library,  // Выбор архивов (.vcl, .zip)
     Audio,    // Выбор звуков (.mp3, .wav, .ogg и т.д.)
     Folder,   // Выбор ПАПКИ
     AnyFile   // Выбор вообще любого файла
