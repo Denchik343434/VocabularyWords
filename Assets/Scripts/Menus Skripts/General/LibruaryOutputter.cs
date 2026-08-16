@@ -48,6 +48,7 @@ public class LibruaryOutputter : MonoBehaviour
         }
         _libruaryNameText.Text = "";
         StorageManager.ClearCache();
+        AudioManager.UnloadCurrentLibrary();
     }
 
     void OnDestroy()

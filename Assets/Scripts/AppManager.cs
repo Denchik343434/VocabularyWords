@@ -28,6 +28,7 @@ public class AppManager : MonoBehaviour
     {
         StorageManager.InitializeStorage();
         StorageManager.ClearCache();
+        AudioManager.EnsureSource();
 
         QualitySettings.vSyncCount = 0; 
         Application.targetFrameRate = _targetFrameRate; 

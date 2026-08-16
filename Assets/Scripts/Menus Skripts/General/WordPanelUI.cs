@@ -1,12 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 using System;
+using System.Threading.Tasks;
 using Unity.VisualScripting;
-using System.Text.RegularExpressions;
-using System.Linq;
 
 // компонент панели редактирования слова 
 public class WordPanelUI : MonoBehaviour
@@ -56,11 +52,14 @@ public class WordPanelUI : MonoBehaviour
         _wordInput.OnTextChanged += () => OnValuesUpdate();
         _explanationInput.OnTextChanged += () => _word = UpdateWord();
         _testExplanation.OnTextChanged += () => _word = UpdateWord();
+
+        AudioManager.onFinished += OnClipFinished;
+
         //TODO: добавить подпись на событие на изменение прикрипленного аудиофайла
          
         _clipButton.onClick.AddListener(OnClipClicked);
         _playButton.onClick.AddListener(OnPlayClicked);
-        _pauseButton.onClick.AddListener(OnPauseClicked);
+        _pauseButton.onClick.AddListener(OnStopClicked);
         _removeButton.onClick.AddListener(OnRemoveClicked);
 
         OnValuesUpdate();
@@ -82,18 +81,19 @@ public class WordPanelUI : MonoBehaviour
     private WordData UpdateWord()
     {
         return new WordData
-        {
-            Word =  _wordInput.Text,
-            Explanation = _explanationInput.Text,
-            TestExplanation = _testExplanation.Text
-        // audio = attachedAudioPath
-        };
+        (
+            _wordInput.Text,
+            _explanationInput.Text,
+            _testExplanation.Text
+        );
     }
 
     //Метод для подписки на события изменения полей
     private void OnValuesUpdate()
     {
+        string oldName = Word.Word;
         _word = UpdateWord();
+        AudioManager.RenameAudioClip(oldName, Word.Word);
         OnValuesChanged?.Invoke();
     }
 
@@ -108,29 +108,53 @@ public class WordPanelUI : MonoBehaviour
     //метод обработки нажатия кнопки удаления
     private void OnRemoveClicked()
     {
+        AudioManager.DeleteAudioClip(Word.Word);
         transform.SetParent(null);
         Destroy(gameObject);
         OnValuesChanged?.Invoke();
     }
 
     //метод для обработки нажатия на кнопку скрепки (выбор аудиофайла)
-    private void OnClipClicked()
+    private async void OnClipClicked()
     {
-        // TODO: Вызов проводника для выбора аудиофайла
-        Debug.Log("Нажата скрепка: выбираем аудио...");
+        if (IsEmpty)
+        return;
+
+        AudioManager.Stop();
+
+        string path = StorageManager.GetUserPath(StorageFilterType.Audio);
+        if (path == null)
+        return;
+
+        UIBlocker.Freze();
+        await AudioManager.AddAudioClipAsync(Word.Word, path);
+        UIBlocker.Unfreze();
+        Debug.Log("По идее прикрепилось");
     }
 
     //метод для обработки нажатия на кнопку воспроизведения аудио
     private void OnPlayClicked()
     {
-        // TODO: Воспроизведение прикрепленного аудио
-        Debug.Log("Воспроизведение аудио...");
+        AudioManager.Stop();
+        _pauseButton.gameObject.SetActive(true);
+        _playButton.gameObject.SetActive(false);
+        AudioManager.Play(Word.Word);
     }
 
      //метод для обработки нажатия на кнопку паузы аудио
-    private void OnPauseClicked()
+    private void OnStopClicked()
     {
-        // TODO: Пауза воспроизведения аудио
-        Debug.Log("Пауза воспроизведения аудио...");
+        AudioManager.Stop();
+    }
+
+    private void OnClipFinished()
+    {
+        _pauseButton.gameObject.SetActive(false);
+        _playButton.gameObject.SetActive(true);
+    }
+
+    void OnDestroy()
+    {
+        AudioManager.onFinished -= OnClipFinished;
     }
 }

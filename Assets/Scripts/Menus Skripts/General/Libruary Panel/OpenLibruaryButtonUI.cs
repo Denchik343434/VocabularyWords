@@ -21,6 +21,13 @@ public class OpenLibruaryButtonUI : MonoBehaviour
 
     void Start()
     {
-        GetComponent<Button>().onClick.AddListener(() => {StorageManager.UnpackLibrariesToCache(LibraryName); OnOpened?.Invoke();});
+        GetComponent<Button>().onClick.AddListener(async () =>
+        {
+            UIBlocker.Block();
+            await StorageManager.UnpackLibrariesToCache(LibraryName);
+            await AudioManager.RefreshAudioDictionaryAsync();
+            OnOpened?.Invoke();
+            UIBlocker.Unblock();
+        });
     }
 }

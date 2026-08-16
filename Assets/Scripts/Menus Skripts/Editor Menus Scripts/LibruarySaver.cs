@@ -10,14 +10,12 @@ using System.Runtime.InteropServices.WindowsRuntime;
 
 public class LibruarySaver : MonoBehaviour
 {
-    [SerializeField] private GameObject _loadingIcon;
     [SerializeField] private GameObject _savedIcon;
     [SerializeField] private GameObject _unsavedIcon;
     [SerializeField] private InputfieldTMPText _libruaryNameText;
     [SerializeField] private Button _saveButton;
     [SerializeField] private Button _saveToFolderButton;
     [SerializeField] private GameObject _content;
-    [SerializeField] private CanvasGroup _canvasGroup;
     private bool _isSavingPosible = false;
     private CancellationTokenSource _saveCts;
 
@@ -70,9 +68,7 @@ public class LibruarySaver : MonoBehaviour
         _saveCts = new CancellationTokenSource();
         var token = _saveCts.Token;
 
-        _canvasGroup.alpha = 0.5f;
-        _canvasGroup.blocksRaycasts = false;
-        _loadingIcon.SetActive(true);
+        UIBlocker.Block();
         _unsavedIcon.SetActive(false);
         _savedIcon.SetActive(false);
 
@@ -96,9 +92,7 @@ public class LibruarySaver : MonoBehaviour
         }
         finally
         {
-            _loadingIcon.SetActive(false);
-            _canvasGroup.blocksRaycasts = true;
-            _canvasGroup.alpha = 1f;
+            UIBlocker.Unblock();
             _saveCts?.Dispose();
             _saveCts = null;
         }
@@ -124,7 +118,7 @@ public class LibruarySaver : MonoBehaviour
             StorageManager.DeleteJsonFromCache(lastName);
         }
 
-        await StorageManager.SaveLibrary(saveFolderPath);
+        await StorageManager.SaveLibraryAsync(saveFolderPath);
 
         token.ThrowIfCancellationRequested();
 

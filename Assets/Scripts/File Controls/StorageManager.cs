@@ -7,6 +7,7 @@ using UnityEngine;
 using SFB;
 using System.Threading.Tasks;
 using System.Threading;
+using UnityEngine.Networking;
 
 // TODO: добавить сохранение аудио файлов в zip архиве
 
@@ -38,69 +39,69 @@ public class StorageManager
     /// <summary>
     /// Распаковывает список библиотек по их именам во временный кэш.
     /// </summary>
-    public static void UnpackLibrariesToCache(params string[] libraryNames)
+    public static async Task UnpackLibrariesToCache(params string[] libraryNames)
     {
+        string librariesFolderPath = _librariesFolderPath;
+        string tempCachePath = Application.temporaryCachePath;
+        string cacheJsonsFolderPath = _cacheJsonsFolderPath;
+        string cacheAudioFolderPath = _cacheAudioFolderPath;
+
         EnsureCacheDirectoriesExist();
 
-        foreach (string libName in libraryNames)
+        await Task.Run(() =>
         {
-            string vclFilePath = Path.Combine(_librariesFolderPath, libName + ".vcl");
 
-            if (!File.Exists(vclFilePath))
+            foreach (string libName in libraryNames)
             {
-                Debug.LogError($"[Storage] Файл библиотеки не найден: {vclFilePath}");
-                continue;
-            }
+                string vclFilePath = Path.Combine(librariesFolderPath, libName + ".vcl");
 
-            try
-            {
-                // Временная папка для промежуточной распаковки архива
-                string tempUnpackPath = Path.Combine(Application.temporaryCachePath, "TempUnpack_" + libName);
-                if (Directory.Exists(tempUnpackPath))
+                if (!File.Exists(vclFilePath))
                 {
+                    continue;
+                }
+
+                try
+                {
+                    // Временная папка для промежуточной распаковки архива
+                    string tempUnpackPath = Path.Combine(tempCachePath, "TempUnpack_" + libName);
+                    if (Directory.Exists(tempUnpackPath))
+                    {
+                        Directory.Delete(tempUnpackPath, true);
+                    }
+
+                    // 1. Распаковываем zip-архив с поддержкой UTF-8 (для кириллицы)
+                    ZipFile.ExtractToDirectory(vclFilePath, tempUnpackPath, Encoding.UTF8);
+
+                    // 2. Переносим library.json в папку CacheSession/JSONs/ИмяБиблиотеки.json
+                    string tempJsonPath = Path.Combine(tempUnpackPath, "library.json");
+                    if (File.Exists(tempJsonPath))
+                    {
+                        string targetJsonPath = Path.Combine(cacheJsonsFolderPath, libName + ".json");
+                        if (File.Exists(targetJsonPath)) File.Delete(targetJsonPath);
+                        File.Move(tempJsonPath, targetJsonPath);
+                    }
+
+                    // 3. Переносим остальные файлы (аудио и т.д.) в CacheSession/Audio/
+
+                    foreach (string file in Directory.GetFiles(tempUnpackPath))
+                    {
+                        string fileName = Path.GetFileName(file);
+                        string destPath = Path.Combine(cacheAudioFolderPath, fileName);
+
+                        // Перезаписываем файл, если он уже существует
+                        File.Copy(file, destPath, true);
+                        File.Delete(file);
+                    }
+
+                    // Подчищаем промежуточную папку
                     Directory.Delete(tempUnpackPath, true);
                 }
-
-                // 1. Распаковываем zip-архив с поддержкой UTF-8 (для кириллицы)
-                ZipFile.ExtractToDirectory(vclFilePath, tempUnpackPath, Encoding.UTF8);
-
-                // 2. Переносим library.json в папку CacheSession/JSONs/ИмяБиблиотеки.json
-                string tempJsonPath = Path.Combine(tempUnpackPath, "library.json");
-                if (File.Exists(tempJsonPath))
+                catch (Exception ex)
                 {
-                    string targetJsonPath = Path.Combine(_cacheJsonsFolderPath, libName + ".json");
-                    if (File.Exists(targetJsonPath)) File.Delete(targetJsonPath);
-                    File.Move(tempJsonPath, targetJsonPath);
+                    Debug.Log(ex);
                 }
-                else
-                {
-                    Debug.LogWarning($"[Storage] Файл library.json не найден в библиотеке '{libName}'!");
-                }
-
-                // 3. Переносим остальные файлы (аудио и т.д.) в CacheSession/Audio/ИмяБиблиотеки/
-                string targetAudioFolder = Path.Combine(_cacheAudioFolderPath, libName);
-                if (Directory.Exists(targetAudioFolder))
-                {
-                    Directory.Delete(targetAudioFolder, true);
-                }
-                Directory.CreateDirectory(targetAudioFolder);
-
-                foreach (string file in Directory.GetFiles(tempUnpackPath))
-                {
-                    string fileName = Path.GetFileName(file);
-                    File.Move(file, Path.Combine(targetAudioFolder, fileName));
-                }
-
-                // Подчищаем промежуточную папку
-                Directory.Delete(tempUnpackPath, true);
-
-                Debug.Log($"[Storage] Библиотека '{libName}' успешно распакована в кэш.");
             }
-            catch (Exception ex)
-            {
-                Debug.LogError($"[Storage] Ошибка при распаковке библиотеки '{libName}': {ex.Message}");
-            }
-        }
+        });
     }
 
     /// <summary>
@@ -140,15 +141,14 @@ public class StorageManager
     /// Сохраняет библиотеку обратно из кэша в архив .vcl в persistentDataPath.
     /// </summary>
     
-    public static async Task SaveLibrary(string saveFolderPath = null)
+    public static async Task SaveLibraryAsync(string saveFolderPath = null)
     {
         saveFolderPath ??= _librariesFolderPath;
         string libraryName = GetLoadedLibrariesFromCache()[0].LibraryName;
-
         string jsonPath = Path.Combine(_cacheJsonsFolderPath, libraryName + ".json");
-        string audioFolderPath = Path.Combine(_cacheAudioFolderPath, libraryName);
         string vclFilePath = Path.Combine(saveFolderPath, libraryName + ".vcl");
         string tempCachFolder = Application.temporaryCachePath;
+        string cacheAudioFolderPath = _cacheAudioFolderPath;
 
         if (!File.Exists(jsonPath))
         {
@@ -169,9 +169,9 @@ public class StorageManager
             File.Copy(jsonPath, Path.Combine(tempPackFolder, "library.json"), true);
 
             // Копируем все аудиофайлы в папку сборки
-            if (Directory.Exists(audioFolderPath))
+            if (Directory.Exists(cacheAudioFolderPath))
             {
-                foreach (string file in Directory.GetFiles(audioFolderPath))
+                foreach (string file in Directory.GetFiles(cacheAudioFolderPath))
                 {
                     string fileName = Path.GetFileName(file);
                     File.Copy(file, Path.Combine(tempPackFolder, fileName), true);
@@ -332,7 +332,7 @@ public class StorageManager
     /// </summary>
     /// <param name="filterType">Что нужно выбрать: StorageFilterType.Archive, Audio, Folder или AnyFile</param>
     /// <param name="title">Заголовок окна (необязательно)</param>
-    public static string GetUserPath(StorageFilterType filterType = StorageFilterType.Library)
+    public static string GetUserPath(StorageFilterType filterType)
     {
         try
         {
@@ -364,7 +364,7 @@ public class StorageManager
                 case StorageFilterType.Audio:
                     title = "Выберете аудио файл";
                     extensions = new[] {
-                        new ExtensionFilter("Аудиофайлы", "mp3", "wav", "ogg", "flac", "aiff"),
+                        new ExtensionFilter("Аудиофайлы", "mp3", "wav", "ogg"),
                         new ExtensionFilter("Все файлы", "*")
                     };
                     break;
@@ -395,46 +395,6 @@ public class StorageManager
         return null;
     }
 
-    /// <summary>
-    /// Копирует аудиофайл по указанному пути в папку кэша аудио.
-    /// Переименовывает файл согласно переданному имени, сохраняя исходное расширение.
-    /// Если в кэше загружена библиотека — файл кладётся в её подпапку.
-    /// Возвращает полный путь к скопированному файлу в кэше или null при ошибке.
-    /// </summary>
-    public static string ClipAudio(string name, string path)
-    {
-        if (!File.Exists(path))
-        {
-            Debug.LogError($"[Storage] Исходный аудиофайл не найден: {path}");
-            return null;
-        }
-
-        try
-        {
-            EnsureCacheDirectoriesExist();
-
-            string targetFolder = Path.Combine(_cacheAudioFolderPath, GetLoadedLibrariesFromCache()[0].LibraryName);
-            if (!Directory.Exists(targetFolder))
-                Directory.CreateDirectory(targetFolder);
-
-            string ext = Path.GetExtension(path);
-            string fileName = name;
-            if (!name.EndsWith(ext, StringComparison.OrdinalIgnoreCase))
-                fileName += ext;
-
-            string destPath = Path.Combine(targetFolder, fileName);
-
-            File.Copy(path, destPath, true);
-
-            Debug.Log($"[Storage] Аудиофайл '{fileName}' скопирован в кэш: {destPath}");
-            return destPath;
-        }
-        catch (Exception ex)
-        {
-            Debug.LogError($"[Storage] Ошибка при копировании аудио: {ex.Message}");
-            return null;
-        }
-    }
 
     /// <summary>
     /// Копирует файл библиотеки (.vcl) из указанного пути в основное хранилище библиотек.
@@ -464,6 +424,149 @@ public class StorageManager
         {
             Debug.LogError($"[Storage] Ошибка при добавлении библиотеки: {ex.Message}");
         }
+    }
+    
+    /// <summary>
+    /// Копирует аудиофайл по указанному пути в папку кэша аудио.
+    /// Переименовывает файл согласно переданному имени, сохраняя исходное расширение.
+    /// Если в кэше загружена библиотека — файл кладётся в её подпапку.
+    /// Возвращает полный путь к скопированному файлу в кэше или null при ошибке.
+    /// </summary>
+    public static string ClipAudio(string name, string path)
+    {
+        if (!File.Exists(path))
+        {
+            Debug.LogError($"[Storage] Исходный аудиофайл не найден: {path}");
+            return null;
+        }
+
+        try
+        {
+            EnsureCacheDirectoriesExist();
+            DeleteAudioFile(name);
+
+
+            string ext = Path.GetExtension(path);
+            string fileName = name;
+            if (!name.EndsWith(ext, StringComparison.OrdinalIgnoreCase))
+                fileName += ext;
+
+            // Сохраняем напрямую в _cacheAudioFolderPath без подпапок
+            string destPath = Path.Combine(_cacheAudioFolderPath, fileName);
+
+            File.Copy(path, destPath, true);
+
+            Debug.Log($"[Storage] Аудиофайл '{fileName}' скопирован в кэш: {destPath}");
+            return destPath;
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"[Storage] Ошибка при копировании аудио: {ex.Message}");
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Удаляет аудиофайл по его имени (без расширения) из указанной библиотеки или из всего кэша.
+    /// </summary>
+    public static void DeleteAudioFile(string fileNameWithoutExt)
+    {
+        string[] files = Directory.GetFiles(_cacheAudioFolderPath);
+            foreach (string file in files)
+            {
+                if (Path.GetFileNameWithoutExtension(file).Equals(fileNameWithoutExt, StringComparison.OrdinalIgnoreCase))
+                {
+                    try
+                    {
+                        File.Delete(file);
+                        Debug.Log($"[Storage] Аудиофайл '{fileNameWithoutExt}' удален: {file}");
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.LogError($"[Storage] Ошибка удаления файла '{file}': {ex.Message}");
+                    }
+                }
+            }
+    }
+
+    /// <summary>
+    /// Переименовывает аудиофайл с oldName на newName (без расширения) с сохранением расширения.
+    /// </summary>
+    public static void RenameAudioFile(string oldNameWithoutExt, string newNameWithoutExt)
+    {
+        string[] files = Directory.GetFiles(_cacheAudioFolderPath);
+        foreach (string file in files)
+        {
+            if (Path.GetFileNameWithoutExtension(file).Equals(oldNameWithoutExt, StringComparison.OrdinalIgnoreCase))
+            {
+                try
+                {
+                    string ext = Path.GetExtension(file);
+                    string newFilePath = Path.Combine(_cacheAudioFolderPath, newNameWithoutExt + ext);
+
+                    if (File.Exists(newFilePath))
+                    {
+                        File.Delete(newFilePath);
+                    }
+
+                    File.Move(file, newFilePath);
+                    Debug.Log($"[Storage] Файл '{oldNameWithoutExt}' переименован в '{newNameWithoutExt}'");
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[Storage] Ошибка переименования файла '{file}': {ex.Message}");
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Асинхронно считывает все аудиофайлы из кэша и возвращает словарь [ИмяБезРасширения, AudioClip].
+    /// </summary>
+    public static async Task<Dictionary<string, AudioClip>> LoadAudioClipsFromCacheAsync(CancellationToken token = default)
+    {
+        var audioClips = new Dictionary<string, AudioClip>();
+
+        if (!Directory.Exists(_cacheAudioFolderPath))
+        {
+            Debug.LogWarning($"[Storage] Папка кэша аудио не найдена: {_cacheAudioFolderPath}");
+            return audioClips;
+        }
+
+        string[] files = Directory.GetFiles(_cacheAudioFolderPath);
+
+        foreach (string filePath in files)
+        {
+            if (token.IsCancellationRequested) break;
+
+            string clipName = Path.GetFileNameWithoutExtension(filePath);
+
+            using (UnityWebRequest request = UnityWebRequestMultimedia.GetAudioClip("file://" + filePath, AudioType.UNKNOWN))
+            {
+                UnityWebRequestAsyncOperation op = request.SendWebRequest();
+                while (!op.isDone)
+                {
+                    if (token.IsCancellationRequested)
+                    {
+                        request.Abort();
+                        token.ThrowIfCancellationRequested();
+                    }
+                    await Task.Yield();
+                }
+
+                if (request.result == UnityWebRequest.Result.Success)
+                {
+                    AudioClip clip = DownloadHandlerAudioClip.GetContent(request);
+                    if (clip != null)
+                    {
+                        clip.name = clipName;
+                        audioClips[clipName] = clip;
+                    }
+                }
+            }
+        }
+        Debug.Log($"Долно было прочитать но для проверки вот сколько оно прочитало {audioClips.Count}");
+        return audioClips;
     }
 }
 
