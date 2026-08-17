@@ -6,13 +6,14 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
+using TMPro;
 
 public class LibruarySaver : MonoBehaviour
 {
     [SerializeField] private GameObject _savedIcon;
     [SerializeField] private GameObject _unsavedIcon;
-    [SerializeField] private InputfieldTMPText _libruaryNameText;
+    [SerializeField] private GameObject _saveWarningIcon;
+    [SerializeField] private TMP_InputField _libruaryNameText;
     [SerializeField] private Button _saveButton;
     [SerializeField] private Button _saveToFolderButton;
     [SerializeField] private GameObject _content;
@@ -22,7 +23,11 @@ public class LibruarySaver : MonoBehaviour
     void Start()
     {
         WordPanelUI.OnValuesChanged += OnLibruaryChanged;
-        _libruaryNameText.OnTextChanged += OnLibruaryChanged;
+        _libruaryNameText.onEndEdit.AddListener(input => 
+        {
+            _libruaryNameText.text = InputDefender.ToMaxCorrect(input);
+            OnLibruaryChanged();
+        });
 
         _saveButton.onClick.AddListener(() => 
         {
@@ -47,14 +52,13 @@ public class LibruarySaver : MonoBehaviour
             else
             Debug.Log("отказано");
         });
-
-        GetComponent<SaveWarning>().OnSaveWarningChanged += (isValid) => _isSavingPosible = isValid;
     }
 
     private void OnLibruaryChanged()
     {
         _unsavedIcon.SetActive(true);
         _savedIcon.SetActive(false);
+        _isSavingPosible = UpdateValidate();
     }
 
     private void TrySaveLibruary()
@@ -141,9 +145,42 @@ public class LibruarySaver : MonoBehaviour
 
         LibraryData library = new LibraryData
         {
-            LibraryName = _libruaryNameText.Text,
+            LibraryName = _libruaryNameText.text,
             Words = words
         };
         return library;
+    }
+
+        private bool UpdateValidate()
+    {
+        bool IsValid = true;
+        
+        if (string.IsNullOrWhiteSpace(_libruaryNameText.text))
+        {
+            IsValid = false;
+        }
+
+        if (IsValid)
+        {
+
+            foreach (Transform panel in _content.transform)
+            {
+                if (panel.TryGetComponent<WordPanelUI>(out var wordPanel))
+                {
+                    if (wordPanel.IsEmpty || _content.transform.childCount == 0)
+                    {
+                        IsValid = false;
+                    }
+                }
+            }
+        }
+
+        _saveWarningIcon.SetActive(!IsValid);
+        return IsValid;
+    }
+
+    void OnEnable()
+    {
+        UpdateValidate();
     }
 }

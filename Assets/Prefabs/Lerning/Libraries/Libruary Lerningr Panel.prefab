@@ -88,7 +88,7 @@ GameObject:
   - component: {fileID: 7843042884028741178}
   - component: {fileID: 4004589808792876778}
   m_Layer: 5
-  m_Name: Libruary Editor Panel
+  m_Name: Libruary Lerningr Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -570,7 +570,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6b96c1f2abad26c3868172323332fb4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _targetMenuName: Word Editor Menu
+  _targetMenuName: Words  Menu
 --- !u!114 &8601349214830801011
 MonoBehaviour:
   m_ObjectHideFlags: 0

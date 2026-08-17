@@ -3,14 +3,15 @@ using UnityEngine.UI;
 using System;
 using System.Threading.Tasks;
 using Unity.VisualScripting;
+using TMPro;
 
 // компонент панели редактирования слова 
 public class WordPanelUI : MonoBehaviour
 {
     // Ссылки на UI элементы 
-    [SerializeField] private InputfieldTMPText _wordInput;
-    [SerializeField] private InputfieldTMPText _explanationInput;
-    [SerializeField] private InputfieldTMPText _testExplanation;
+    [SerializeField] private TMP_InputField _wordInput;
+    [SerializeField] private TMP_InputField _explanationInput;
+    [SerializeField] private TMP_InputField _testExplanation;
     [SerializeField] private GameObject _emptyWarningIcon;
 
     [Space(15)]
@@ -18,9 +19,6 @@ public class WordPanelUI : MonoBehaviour
     [SerializeField] private Button _playButton;
     [SerializeField] private Button _pauseButton;
     [SerializeField] private Button _removeButton;
-
-    // Путь к прикрепленному аудиофайлу
-    //private string _attachedAudioPath = "";
 
     // поле и свойство для получения данный слова при сохранении библиотеки
     private WordData _word;
@@ -46,12 +44,12 @@ public class WordPanelUI : MonoBehaviour
 
     private void Start()
     {
-        _wordInput.OnTextChanged += () => _emptyWarningIcon.SetActive(IsValid());
+        _wordInput.onEndEdit.AddListener(_ => _emptyWarningIcon.SetActive(IsValid()));
         //TODO: добавить проверку на прикрипленный аудиофайл
 
-        _wordInput.OnTextChanged += () => OnValuesUpdate();
-        _explanationInput.OnTextChanged += () => _word = UpdateWord();
-        _testExplanation.OnTextChanged += () => _word = UpdateWord();
+        _wordInput.onEndEdit.AddListener(input => {_wordInput.text = InputDefender.ToMaxCorrect(input); OnValuesUpdate();});
+        _explanationInput.onEndEdit.AddListener(input => {_explanationInput.text = InputDefender.ToCorrectJsonString(input); OnValuesUpdate();});
+        _testExplanation.onEndEdit.AddListener(input => {_testExplanation.text = InputDefender.ToCorrectJsonString(input); OnValuesUpdate();}); 
 
         AudioManager.onFinished += OnClipFinished;
 
@@ -69,12 +67,9 @@ public class WordPanelUI : MonoBehaviour
     // Заполнение данными при загрузке существующей библиотеки, используется в свойстве
     private void Setup(WordData wordData)
     {
-        _wordInput.Text = wordData.Word;
-        _explanationInput.Text = wordData.Explanation;
-        _testExplanation.Text = wordData.TestExplanation;
-
-        //TODO: добавить заполнение пути к аудио файлу
-        // attachedAudioPath = wordData.audio;
+        _wordInput.text = wordData.Word;
+        _explanationInput.text = wordData.Explanation;
+        _testExplanation.text = wordData.TestExplanation;
     }
 
     // Запись данных из полей в переменную _word
@@ -82,9 +77,9 @@ public class WordPanelUI : MonoBehaviour
     {
         return new WordData
         (
-            _wordInput.Text,
-            _explanationInput.Text,
-            _testExplanation.Text
+            _wordInput.text,
+            _explanationInput.text,
+            _testExplanation.text
         );
     }
 
@@ -93,16 +88,18 @@ public class WordPanelUI : MonoBehaviour
     {
         string oldName = Word.Word;
         _word = UpdateWord();
-        AudioManager.RenameAudioClip(oldName, Word.Word);
         OnValuesChanged?.Invoke();
+
+        if(oldName == Word.Word)
+        return;
+        
+        AudioManager.RenameAudioClip(oldName, Word.Word);
     }
 
     // Проверка, заполнены ли обязательные поля
     private bool IsValid()
     {
-        return string.IsNullOrWhiteSpace(_wordInput.Text);
-
-        //TODO: добавить проверку на наличае аудио
+        return string.IsNullOrWhiteSpace(_wordInput.text);
     }
 
     //метод обработки нажатия кнопки удаления

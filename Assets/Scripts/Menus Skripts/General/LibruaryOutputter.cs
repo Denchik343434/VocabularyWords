@@ -12,7 +12,7 @@ public class LibruaryOutputter : MonoBehaviour
     [SerializeField] private GameObject _wordPanel;
     [SerializeField] private GameObject _addWordPanel;
     [SerializeField] private GameObject _content;
-    [SerializeField] private InputfieldTMPText _libruaryNameText;
+    [SerializeField] private TMP_InputField _libruaryNameText;
     [SerializeField] private NewLibruaryButtonUI _newLibruaryButton;
 
     void Awake()
@@ -37,7 +37,7 @@ public class LibruaryOutputter : MonoBehaviour
             GetComponent<WordAdder>().AddWordPanel = addWordPanel;
         }
 
-        _libruaryNameText.Text = library.LibraryName;
+        _libruaryNameText.text = library.LibraryName;
     }
 
     void OnDisable()
@@ -46,7 +46,7 @@ public class LibruaryOutputter : MonoBehaviour
         {
             Destroy(child.gameObject);
         }
-        _libruaryNameText.Text = "";
+        _libruaryNameText.text = "";
         StorageManager.ClearCache();
         AudioManager.UnloadCurrentLibrary();
     }

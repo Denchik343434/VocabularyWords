@@ -1,12 +1,9 @@
 using System;
 
- //TODO: добавить сохранение аудио файлов в zip архиве
-
-// Класс одного слова (в будущем добавить сюда аудио) 
+// Класс одного слова
 [Serializable]
 public class WordData
 {
-    // Снаружи читать МОЖНО, менять НЕЛЬЗЯ (private set)
     public string Word;
     public string Explanation;
     public string TestExplanation;
