@@ -1019,13 +1019,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19dd947aec8312578a292937a1fcd8f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _playButton: {fileID: 6569449353692963376}
+  _stopButton: {fileID: 2643425344432594418}
   _wordInput: {fileID: 8574564220762835968}
   _explanationInput: {fileID: 2001608336022300834}
   _testExplanation: {fileID: 6405145882413117591}
   _emptyWarningIcon: {fileID: 1381387163690053531}
   _clipButton: {fileID: 6542127733102301254}
-  _playButton: {fileID: 6569449353692963376}
-  _pauseButton: {fileID: 2643425344432594418}
   _removeButton: {fileID: 580870181993961356}
 --- !u!1 &3402260836676063902
 GameObject:

@@ -9,7 +9,7 @@ using System.Linq;
 
 public class LibruaryOutputter : MonoBehaviour
 {
-    [SerializeField] private GameObject _wordPanel;
+    [SerializeField] private GameObject _wordPanelPrefab;
     [SerializeField] private GameObject _addWordPanel;
     [SerializeField] private GameObject _content;
     [SerializeField] private TMP_InputField _libruaryNameText;
@@ -27,8 +27,8 @@ public class LibruaryOutputter : MonoBehaviour
 
         foreach (WordData word in library.Words)
         {
-            GameObject wordButton = Instantiate(_wordPanel, _content.transform);
-            wordButton.GetComponentInChildren<WordPanelUI>().Word = word;
+            GameObject wordPanel = Instantiate(_wordPanelPrefab, _content.transform);
+            wordPanel.GetComponentInChildren<WordPanelUI>().Word = word;
         }
 
         if (_addWordPanel != null)

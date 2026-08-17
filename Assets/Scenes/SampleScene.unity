@@ -3739,7 +3739,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfc7e5c7b2a6f8de6883fa51ff69acaa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _wordPanel: {fileID: 3335825637402785937, guid: ea88077691255136f978f036f4c68613, type: 3}
+  _wordPanelPrefab: {fileID: 3335825637402785937, guid: ea88077691255136f978f036f4c68613, type: 3}
   _addWordPanel: {fileID: 7117018354343759121, guid: d5b70f5c6ce3faf2d8af9ad1aef125f3, type: 3}
   _content: {fileID: 1708280393}
   _libruaryNameText: {fileID: 802819975}
@@ -3757,7 +3757,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _content: {fileID: 1708280393}
-  _WordEditPanel: {fileID: 3335825637402785937, guid: ea88077691255136f978f036f4c68613, type: 3}
+  _WordEditPanelPrefab: {fileID: 3335825637402785937, guid: ea88077691255136f978f036f4c68613, type: 3}
   _addWordPanelPrefab: {fileID: 7117018354343759121, guid: d5b70f5c6ce3faf2d8af9ad1aef125f3, type: 3}
 --- !u!114 &1287599382
 MonoBehaviour:

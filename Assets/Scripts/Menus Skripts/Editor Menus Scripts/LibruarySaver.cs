@@ -22,7 +22,7 @@ public class LibruarySaver : MonoBehaviour
 
     void Start()
     {
-        WordPanelUI.OnValuesChanged += OnLibruaryChanged;
+        WordEditPanelUI.OnValuesChanged += OnLibruaryChanged;
         _libruaryNameText.onEndEdit.AddListener(input => 
         {
             _libruaryNameText.text = InputDefender.ToMaxCorrect(input);
@@ -105,7 +105,7 @@ public class LibruarySaver : MonoBehaviour
 
     void OnDestroy()
     {
-        WordPanelUI.OnValuesChanged -= OnLibruaryChanged;
+        WordEditPanelUI.OnValuesChanged -= OnLibruaryChanged;
     }
 
     private async Task SaveLibraryAsync(string saveFolderPath, CancellationToken token)
@@ -137,7 +137,7 @@ public class LibruarySaver : MonoBehaviour
 
         foreach (Transform child in _content.transform)
         {
-            if(child.TryGetComponent<WordPanelUI>(out var wordEditPanel))
+            if(child.TryGetComponent<WordEditPanelUI>(out var wordEditPanel))
             {
                 words.Add(wordEditPanel.Word);
             }
@@ -165,7 +165,7 @@ public class LibruarySaver : MonoBehaviour
 
             foreach (Transform panel in _content.transform)
             {
-                if (panel.TryGetComponent<WordPanelUI>(out var wordPanel))
+                if (panel.TryGetComponent<WordEditPanelUI>(out var wordPanel))
                 {
                     if (wordPanel.IsEmpty || _content.transform.childCount == 0)
                     {
