@@ -22,7 +22,12 @@ public abstract class WordPanelUI : MonoBehaviour
         }
     }
 
-    protected abstract void Start();
+    protected virtual void Start()
+    {
+        AudioManager.onFinished += OnClipFinished;
+        _playButton.onClick.AddListener(PlayClip);
+        _stopButton.onClick.AddListener(StopClip);
+    }
 
     protected abstract void OnDestroy();
 
