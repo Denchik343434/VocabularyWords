@@ -89,6 +89,7 @@ GameObject:
   - component: {fileID: 907674174581274463}
   - component: {fileID: 841681545227878034}
   - component: {fileID: 2826830446981382988}
+  - component: {fileID: 1293703002009534670}
   m_Layer: 5
   m_Name: Word Panel
   m_TagString: Untagged
@@ -214,6 +215,27 @@ MonoBehaviour:
   _stopButton: {fileID: 2643425344432594418}
   _wordText: {fileID: 5955599245179575422}
   _explanationText: {fileID: 5342615552098260107}
+  _partitionPlank: {fileID: 5348788412724239670}
+--- !u!114 &1293703002009534670
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3335825637402785937}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreLayout: 0
+  m_MinWidth: -1
+  m_MinHeight: 120
+  m_PreferredWidth: -1
+  m_PreferredHeight: -1
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
 --- !u!1 &3402260836676063902
 GameObject:
   m_ObjectHideFlags: 0
@@ -456,7 +478,7 @@ MonoBehaviour:
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0

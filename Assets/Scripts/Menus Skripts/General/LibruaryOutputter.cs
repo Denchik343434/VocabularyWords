@@ -49,12 +49,6 @@ public class LibruaryOutputter : MonoBehaviour
         _libraryNameText.text = library.LibraryName;
     }
 
-    private void ClearLibraryData()
-    {
-        StorageManager.ClearCache();
-        AudioManager.UnloadCurrentLibrary();
-    }
-
     private void ClearMenu()
     {
         foreach (Transform child in _content.transform)
@@ -73,7 +67,7 @@ public class LibruaryOutputter : MonoBehaviour
     void OnDisable()
     {
         ClearMenu();
-        ClearLibraryData();
+        StorageManager.ClearLibraryData();
     }
 
     void OnDestroy()

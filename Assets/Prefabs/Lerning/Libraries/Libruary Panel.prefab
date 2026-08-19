@@ -169,6 +169,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _deleteButton: {fileID: 3561146125492012550}
   _openButton: {fileID: 8601349214830801011}
+  _libraryNameText: {fileID: 6741507112516461091}
 --- !u!114 &4627926195643863820
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -648,7 +649,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69514f1df102918e8a17ba3962da30da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _libraryNameText: {fileID: 6741507112516461091}
 --- !u!114 &8704671186434502229
 MonoBehaviour:
   m_ObjectHideFlags: 0

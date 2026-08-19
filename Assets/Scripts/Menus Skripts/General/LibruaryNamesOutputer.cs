@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using System.IO.Compression;
-using UnityEngine.UI; 
+using UnityEngine.UI;
+using TMPro;
 
 public class LibruaryNamesOutputter : MonoBehaviour
 {
@@ -40,9 +41,11 @@ public class LibruaryNamesOutputter : MonoBehaviour
             libraryPanel.GetComponent<LibruaryPanelUI>().LibraryName = libraryName;
         }
 
-        if (_addLibruaryButton != null)
+        if(_addLibruaryButton != null)
             _addLibruaryButton.onClick.RemoveAllListeners();
+
         _addLibruaryButton = Instantiate(_addLibruaryButtonPrefab, _content.transform).GetComponent<Button>();
+
         _addLibruaryButton.onClick.AddListener(() => 
         {
             Debug.Log("оно тыкаеться");

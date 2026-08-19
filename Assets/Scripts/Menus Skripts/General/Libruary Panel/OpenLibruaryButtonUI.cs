@@ -8,14 +8,12 @@ public class OpenLibruaryButtonUI : MonoBehaviour
 {
     public static event Action OnOpened;
     private string _libraryName;
-    [SerializeField] private TMPro.TextMeshProUGUI _libraryNameText;
     public string LibraryName
     {
         get { return _libraryName;}
         set 
         { 
             _libraryName = value;
-            _libraryNameText.text = value;
         }
     }
 

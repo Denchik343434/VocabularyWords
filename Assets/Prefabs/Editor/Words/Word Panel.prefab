@@ -726,7 +726,7 @@ MonoBehaviour:
   m_CharacterValidation: 0
   m_RegexValue: 
   m_GlobalPointSize: 14
-  m_CharacterLimit: 300
+  m_CharacterLimit: 180
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls: []
@@ -1649,7 +1649,7 @@ MonoBehaviour:
   m_CharacterValidation: 0
   m_RegexValue: 
   m_GlobalPointSize: 14
-  m_CharacterLimit: 60
+  m_CharacterLimit: 30
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls: []
@@ -2199,7 +2199,7 @@ MonoBehaviour:
   m_CharacterValidation: 0
   m_RegexValue: 
   m_GlobalPointSize: 14
-  m_CharacterLimit: 300
+  m_CharacterLimit: 180
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls: []

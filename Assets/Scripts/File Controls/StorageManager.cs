@@ -568,6 +568,12 @@ public class StorageManager
         Debug.Log($"Долно было прочитать но для проверки вот сколько оно прочитало {audioClips.Count}");
         return audioClips;
     }
+
+    public static void ClearLibraryData()
+    {
+        ClearCache();
+        AudioManager.UnloadCurrentLibrary();
+    }
 }
 
 public enum StorageFilterType
