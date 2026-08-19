@@ -7,11 +7,11 @@ public class AppManager : MonoBehaviour
     [SerializeField] private int _defaultHeight = 720;
     [SerializeField] private int _minWidth = 600;
     [SerializeField] private int _minHeight = 450;
-    [SerializeField] private float _minAspect = 4f / 3f;
-    [SerializeField] private float _maxAspect = 16f / 9f;
+    //[SerializeField] private float _minAspect = 4f / 3f;
+    //[SerializeField] private float _maxAspect = 16f / 9f;
 
-    private int _lastWidth;
-    private int _lastHeight;
+    //private int _lastWidth;
+    //private int _lastHeight;
 
     void Awake()
     {
@@ -24,11 +24,17 @@ public class AppManager : MonoBehaviour
         
         Screen.SetResolution(_defaultWidth, _defaultHeight, FullScreenMode.Windowed);
 
-        _lastWidth = _defaultWidth;
-        _lastHeight = _defaultHeight;
+        //_lastWidth = _defaultWidth;
+        //_lastHeight = _defaultHeight;
     }
 
     void Update()
+    {
+        //ControlWindouSize();
+    }
+
+    /*
+    private void ControlWindouSize()
     {
         if (Screen.fullScreen) return;
 
@@ -73,4 +79,15 @@ public class AppManager : MonoBehaviour
         _lastWidth = targetWidth;
         _lastHeight = targetHeight;
     }
+    */
+
+    /*
+    private void ControlWindouSize()
+    {
+        if (Screen.width < _minWidth || Screen.height < _minHeight)
+        {
+            Screen.SetResolution(_minWidth, _minHeight, FullScreenMode.Windowed);
+        }
+    }
+    */
 }
