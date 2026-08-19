@@ -1,15 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using System.IO;
-using System.IO.Compression; 
-
-
-    // иниациализация хранилище,
-    //  отключение вертикальной синхронизации,
-    //  установка целевой частоты кадров,
-    //  переведение в оконный режим,
-    //  установка минимальной ширины высоты окна
 
 public class AppManager : MonoBehaviour
 {
@@ -45,36 +34,43 @@ public class AppManager : MonoBehaviour
 
         int currentWidth = Screen.width;
         int currentHeight = Screen.height;
-        
+
         if (currentWidth == _lastWidth && currentHeight == _lastHeight) return;
 
+        // Если окно стало МЕНЬШЕ минимального порога — корректируем
+        bool needsResize = false;
         int targetWidth = currentWidth;
         int targetHeight = currentHeight;
 
-        if (targetWidth < _minWidth) targetWidth = _minWidth;
-        if (targetHeight < _minHeight) targetHeight = _minHeight;
+        if (targetWidth < _minWidth) 
+        {
+            targetWidth = _minWidth;
+            needsResize = true;
+        }
+        if (targetHeight < _minHeight) 
+        {
+            targetHeight = _minHeight;
+            needsResize = true;
+        }
 
         float currentAspect = (float)targetWidth / targetHeight;
 
         if (currentAspect > _maxAspect)
         {
             targetWidth = Mathf.RoundToInt(targetHeight * _maxAspect);
+            needsResize = true;
         }
         else if (currentAspect < _minAspect)
         {
             targetWidth = Mathf.RoundToInt(targetHeight * _minAspect);
+            needsResize = true;
         }
-
-        if (targetWidth != currentWidth || targetHeight != currentHeight)
+        if (needsResize)
         {
             Screen.SetResolution(targetWidth, targetHeight, FullScreenMode.Windowed);
-            _lastWidth = targetWidth;
-            _lastHeight = targetHeight;
         }
-        else
-        {
-            _lastWidth = currentWidth;
-            _lastHeight = currentHeight;
-        }
+
+        _lastWidth = targetWidth;
+        _lastHeight = targetHeight;
     }
 }
