@@ -2259,8 +2259,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7bf80674298f777f9a6dc69de2aa4e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _libruaryPanel: {fileID: 2717742345685029637, guid: f25281e80d9945d18b25cd1cdb025a64, type: 3}
-  _addLibruaryButtonPrefab: {fileID: 5842689964201195883, guid: 7ba48e041dc2dd2c3a86606b9f2f99e1, type: 3}
+  _libraryPanel: {fileID: 2717742345685029637, guid: f25281e80d9945d18b25cd1cdb025a64, type: 3}
+  _addLibraryButtonPrefab: {fileID: 5842689964201195883, guid: 7ba48e041dc2dd2c3a86606b9f2f99e1, type: 3}
   _content: {fileID: 970415302}
 --- !u!1 &502403885
 GameObject:
@@ -4163,8 +4163,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7bf80674298f777f9a6dc69de2aa4e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _libruaryPanel: {fileID: 2717742345685029637, guid: 7ec02fe0097a73f11b674775de998ae8, type: 3}
-  _addLibruaryButtonPrefab: {fileID: 5842689964201195883, guid: 7ba48e041dc2dd2c3a86606b9f2f99e1, type: 3}
+  _libraryPanel: {fileID: 2717742345685029637, guid: 7ec02fe0097a73f11b674775de998ae8, type: 3}
+  _addLibraryButtonPrefab: {fileID: 5842689964201195883, guid: 7ba48e041dc2dd2c3a86606b9f2f99e1, type: 3}
   _content: {fileID: 890161731}
 --- !u!1 &856793213
 GameObject:
@@ -5032,8 +5032,6 @@ MonoBehaviour:
   _defaultHeight: 720
   _minWidth: 1024
   _minHeight: 768
-  _minAspect: 1.3333334
-  _maxAspect: 1.7777778
 --- !u!4 &1028150501
 Transform:
   m_ObjectHideFlags: 0
@@ -5555,9 +5553,9 @@ MonoBehaviour:
   _wordPanelPrefab: {fileID: 3335825637402785937, guid: 85e57a965d98f6c799d71a0fe1fe84a1, type: 3}
   _addWordPanel: {fileID: 0}
   _content: {fileID: 2031060056}
-  _libruaryNameInputField: {fileID: 0}
+  _libraryNameInputField: {fileID: 0}
   _libraryNameText: {fileID: 32629063}
-  _newLibruaryButton: {fileID: 0}
+  _newLibraryButton: {fileID: 0}
 --- !u!114 &1139967786
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6346,9 +6344,9 @@ MonoBehaviour:
   _wordPanelPrefab: {fileID: 3335825637402785937, guid: ea88077691255136f978f036f4c68613, type: 3}
   _addWordPanel: {fileID: 7117018354343759121, guid: d5b70f5c6ce3faf2d8af9ad1aef125f3, type: 3}
   _content: {fileID: 1708280393}
-  _libruaryNameInputField: {fileID: 802819975}
+  _libraryNameInputField: {fileID: 802819975}
   _libraryNameText: {fileID: 0}
-  _newLibruaryButton: {fileID: 1313201778}
+  _newLibraryButton: {fileID: 1313201778}
 --- !u!114 &1287599381
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6379,7 +6377,7 @@ MonoBehaviour:
   _savedIcon: {fileID: 1208790475}
   _unsavedIcon: {fileID: 2104193542}
   _saveWarningIcon: {fileID: 1709534450}
-  _libruaryNameText: {fileID: 802819975}
+  _libraryNameText: {fileID: 802819975}
   _saveButton: {fileID: 523607765}
   _saveToFolderButton: {fileID: 733093380}
   _content: {fileID: 1708280393}
@@ -7239,8 +7237,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7bf80674298f777f9a6dc69de2aa4e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _libruaryPanel: {fileID: 2717742345685029637, guid: 82ebfad3c3adaf1e5960c9b74464a018, type: 3}
-  _addLibruaryButtonPrefab: {fileID: 5842689964201195883, guid: 7ba48e041dc2dd2c3a86606b9f2f99e1, type: 3}
+  _libraryPanel: {fileID: 2717742345685029637, guid: 82ebfad3c3adaf1e5960c9b74464a018, type: 3}
+  _addLibraryButtonPrefab: {fileID: 5842689964201195883, guid: 7ba48e041dc2dd2c3a86606b9f2f99e1, type: 3}
   _content: {fileID: 816949969}
 --- !u!1 &1539434076
 GameObject:
@@ -10829,10 +10827,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _wordTestPanelUI: {fileID: 235752051}
-  _resoltsPanel: {fileID: 1449783585}
+  _resultsPanel: {fileID: 1449783585}
   _wordsCountText: {fileID: 1886238369}
   _correctWordsCountText: {fileID: 774203868}
-  _coorectProcentText: {fileID: 979371155}
+  _correctPercentText: {fileID: 979371155}
   _startTestButton: {fileID: 1249782627}
 --- !u!1 &2125052443
 GameObject:
