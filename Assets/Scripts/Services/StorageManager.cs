@@ -332,7 +332,6 @@ public class StorageManager
             {
                 title = "Выберете папку";
                 string[] folderPaths = StandaloneFileBrowser.OpenFolderPanel(title, "", multiselect: false);
-                //string[] folderPaths = StandaloneFileBrowser.OpenFolderPanel(title, "", multiselect: false);
                 return (folderPaths != null && folderPaths.Length > 0 && !string.IsNullOrEmpty(folderPaths[0])) 
                     ? folderPaths[0] 
                     : null;
@@ -369,8 +368,6 @@ public class StorageManager
 
             // 3. Открываем проводник для файлов
             string[] filePaths = StandaloneFileBrowser.OpenFilePanel(title, "", extensions, multiselect: false);
-            //string[] filePaths = StandaloneFileBrowser.OpenFilePanel(title, "", extensions, multiselect: false);
-
             if (filePaths != null && filePaths.Length > 0 && !string.IsNullOrEmpty(filePaths[0]))
             {
                 return filePaths[0];
